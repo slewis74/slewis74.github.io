@@ -5,10 +5,10 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
     <meta http-equiv="last-modified" content="2014-06-14T16:06:20.4035361+10:00" />
-    <meta name="keywords" content="Android,Commands,Parallels,Xamarin,XAML" />
+    <meta name="keywords" content="Android,Parallels,Xamarin" />
     <title>Shannon's Blog</title>
     <link rel="stylesheet" type="text/css" href="/stylesheets/style.css" />
-    <link rel="canonical" href="http://www.slewis.me/" />
+    <link rel="canonical" href="http://www.slewis.me/2014/06/xamarin-android-parallels/" />
 </head>
 <body class="home blog">
     <div id="page" class="hfeed site">
@@ -35,102 +35,28 @@
             <div id="primary" class="site-content">
                 <div id="content" role="main">
                   
-  <ul class="posts">
-    <li class="fancy-container lightblue">
-      <h1>
-        <a href="/2014/06/xaml-commands-and-user-feedback/">Commands not executing, but why?</a> 
-        <span>posted on 12 Jun 2014</span>
-      </h1> 
+
+<div id="post">
+    <h1>Xamarin, Android and Parallels</h1>
+
+    <div class="post-note">
+      Posted by <a href="/about/">Shannon Lewis</a> on 11 Jun 2014
+       | <a href="/category/android">Android</a>
+       | <a href="/category/parallels">Parallels</a>
+       | <a href="/category/xamarin">Xamarin</a>
       
-      <p>So now that you've <a href="/2014/06/xaml-commands/">embraced commands</a>, let's look at how we might provide a slightly better experience for users.</p>
-
-<h2>But why can't I execute?</h2>
-
-<p>In several WPF projects I've worked on we've had the requirement to feedback information to the user about why a button cannot currently execute.  Usually this will be due to some sort of validation condition failing.</p>
-
-<p>Enter a weakness in ICommand.  It provides</p>
-
-<pre><code>bool CanExecute(object value);
-</code></pre>
-
-<p>for you to implement logic to determine whether the command can execute, given a parameter value.  The limitation is that you can't provide explanation as to why the command can't execute.</p>
-
-<p>For these scenarios, a base class along the lines of the following has worked well</p>
-
-<pre><code>public abstract class Command : ICommand, INotifyPropertyChanged
-{
-    public event EventHandler CanExecuteChanged;
-
-    public bool CanExecute(object value)
-    {
-        return Errors.Any() == false;
-    }
-
-    public bool HasErrors { get { return Errors.Any(); } }
-
-    public virtual IEnumerable&lt;string&gt; Errors
-    {
-        get
-        {
-            return Enumerable.Empty&lt;string&gt;();
-        }
-    }
-
-    public void Execute(object value)
-    {
-        if (!CanExecute(value))
-            return;
-        DoExecute(value);
-    }
-
-    protected abstract void DoExecute(object value);
-
-    protected void RaiseCanExecuteChanged()
-    {
-        var handler = CanExecuteChanged;
-        if (handler != null)
-        {
-            handler(this, EventArgs.Empty);
-        }
-        NotifyChanged("HasErrors");
-    }
-
-    private void NotifyChanged(string propertyName)
-    {
-        // details intentionally left blank
-    }
-}
-</code></pre>
-
-<p>So now with <a href="http://msdn.microsoft.com/en-us/library/system.windows.controls.tooltipservice.showondisabled(v=vs.110).aspx">a little bit of trickery</a>, you can bind up a button along the lines of</p>
-
-<pre><code>&lt;Button
-    Command="{Binding SomeCommand}" 
-    ToolTipService.ShowOnDisabled="True" 
-    Content="Disabled Button"&gt;
-    &lt;Button.ToolTip Visibility="{Binding SomeCommand.HasErrors, Converter={StaticResource BooleanToVisibilityConverter}}"&gt;
-        &lt;ToolTip&gt;
-            &lt;ItemsControl ItemsSource="{Binding SomeCommand.Errors}"/&gt;
-        &lt;/ToolTip&gt;
-    &lt;/Button.ToolTip&gt;
-&lt;/Button&gt; 
-</code></pre>
-
-<p>Depending on the application, and the likelihood of a large list of errors, you may also need to extend this to include some fixed sizing of the Tooltip and a ScrollViewer.</p>
-
-<h2>Mobile XAML</h2>
-
-<p>In mobile apps you don't have the same options for user feedback, Tooltips don't exist in that world, but the errors are likely to still be useful to the user. I'm still looking for a good solution in the mobile space, so stay tuned. </p>
-
-      <p><a href="/2014/06/xaml-commands-and-user-feedback/">Read more...</a></p>
-    </li>
-    <li class="fancy-container lightblue">
-      <h1>
-        <a href="/2014/06/xamarin-android-parallels/">Xamarin, Android and Parallels</a> 
-        <span>posted on 11 Jun 2014</span>
-      </h1> 
-      
-      <p>In working on a recent project I tried a couple of different debugging configurations while developing an Android app.</p>
+      <div class="addthis_toolbox addthis_default_style" style="float:right;">
+        <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+        <a class="addthis_button_tweet"></a>
+        <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+        <a class="addthis_button_linkedin_counter"></a>
+        <a class="addthis_counter addthis_pill_style"></a>
+      </div>
+    </div>
+    
+    
+        
+    <p>In working on a recent project I tried a couple of different debugging configurations while developing an Android app.</p>
 
 <p>Following is what I learned along the way...</p>
 
@@ -202,80 +128,37 @@
 <li>The Remote Login settings in OS X show <em>username</em>@<em>machinename</em>.  The <strong><em>username</em>@</strong> can also be used in front of the IP/machine name in the PuTTY config, so you don't have to type the admin username each time you connect it, you'll just need to type the password. </li>
 </ul>
 
-      <p><a href="/2014/06/xamarin-android-parallels/">Read more...</a></p>
-    </li>
-    <li class="fancy-container lightblue">
-      <h1>
-        <a href="/2014/06/xaml-commands/">XAML and Commands</a> 
-        <span>posted on 09 Jun 2014</span>
-      </h1> 
-      
-      <p>During a recent discussion with some developers new to XAML we got onto the topic of Commands.  During the discussion I went over some experiences from previous projects, with  emphasise on one particular pain point. </p>
 
-<h2>Where does it hurt?</h2>
+    <div id="disqus_thread"></div>
+<script>
+    var reset_disqus = function(){
+        DISQUS.reset({
+            reload: true,
+            config: function () {
+                //this.page.identifier = '';
+                this.page.url = 'http://www.slewis.me/2014/06/xamarin-android-parallels/';
+                //this.page.title = '';
+            }
+        });
+    };
 
-<p>One of the most common pain points I've come across relates to implementations around the command pattern.  The particular pain comes down to the <a href="http://en.wikipedia.org/wiki/Command_pattern">receiver</a> being a ViewModel.  This works for simple cases, but can quickly lead to bloating and the ViewModel taking on too many responsibilities/personalities.</p>
+    var disqus_shortname = 'slewis';
+    var disqus_url = 'http://www.slewis.me/2014/06/xamarin-android-parallels/';
 
-<p>What does the manifestation look like?</p>
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
 
-<h3>DelegateCommand/RelayCommand</h3>
+    window.addEventListener('orientationchange', reset_disqus);
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    
+    <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-51ca97356d8c1454"></script>
 
-<p>Included in many of the XAML/MVVM frameworks is the concept of a delegate command.  This is an implementation of ICommand that takes an Action to execute and a Func<bool> to determine CanExecute.  In the constructor you'll see something like this</p>
-
-<pre><code>SomeCommand = new DelegateCommand(() =&gt; DoSomething(), () =&gt; someCondition);
-</code></pre>
-
-<p>Then throughout your view model you will then find </p>
-
-<pre><code>SomeCommand.RaiseCanExecuteChanged();
-</code></pre>
-
-<p>anywhere there's code that could change the result of the CanExecute condition.</p>
-
-<h3>No commands</h3>
-
-<p>A variation on this is used by Caliburn Micro.  What it does differently is that the ViewModel code doesn't use an ICommand derived command object.  It instead relies on methods and properties on the ViewModel, which it then wires to UI triggers and enabled properties.  There's no object to create, so no code in the constructor, but you'll find something like this</p>
-
-<pre><code>public bool CanDoSomething { get { return someCondition; } }
-
-public void DoSomething()
-{
-    // execute stuff here
-}
-</code></pre>
-
-<p>Then throughout your view model you will then find </p>
-
-<pre><code>NotifyChanged(() =&gt; CanDoSomething);
-</code></pre>
-
-<p>anywhere there's code that could change the result of the CanExecute condition.</p>
-
-<h3>So what's wrong with all this?</h3>
-
-<p>As I mentioned earlier, this is all workable for simple scenarios but gets unwieldy pretty quickly as screen complexity/number of commands increases.  I've come into code bases for complex WPF applications that have used this style of commands and it isn't fun, with ViewModels having blown out to thousands of lines of tangled code. </p>
-
-<h3>Embrace the commands</h3>
-
-<p>So my advice, embrace the commands.  Abstract the command functionality away from the ViewModel code and write command objects.</p>
-
-<p>Also, decouple the ViewModel and the Command implementation.  Commands that take a "parent" ViewModel in their constructor and wire themselves to events (think PropertyChanged, ObservableCollection.CollectionChanged etc) will lead to trouble and be hard to test.  I've had much better results through decoupling using an EventAggregator.  I'll save further discussion on decoupling and EventAggretion for another time.  </p>
-
-      <p><a href="/2014/06/xaml-commands/">Read more...</a></p>
-    </li>
-  </ul> 
-
-  <!-- Pagination links -->
-  <div id="post-pagination" class="pagination">
-
-   
-
-      <!--<a href="/">Previous Page</a>-->
-
-
-  </div>
-
-
+</div>
                 </div>
                 <!-- #content -->
             </div>
