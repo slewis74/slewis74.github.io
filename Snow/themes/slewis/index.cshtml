@@ -8,7 +8,7 @@
     <li class="fancy-container lightblue">
       <h1>
         <a href="@postPaged.Url">@postPaged.Title</a> 
-        <span>posted on @postPaged.Date.ToString("dd MMM yyyy")</span>
+        <span>@postPaged.Date.ToString("dd MMM yyyy")</span>
       </h1> 
       @Html.RenderSeries(postPaged)
       @Html.Raw(postPaged.ContentExcerpt)
