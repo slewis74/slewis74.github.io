@@ -1,4 +1,12 @@
-
+---
+layout: post
+title: Model-View-ViewModel
+categories: XAML, MVVM
+published: Draft
+---
+---excerpt
+Don't forget the first M!
+---end
 #The Theory
 ##What is a Model?
 A Model represents data.  The data may be a single entity, it might be an aggregate of multiple model entities.

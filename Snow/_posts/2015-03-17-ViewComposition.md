@@ -1,3 +1,13 @@
+---
+layout: post
+title: Composing views
+categories: XAML, PresentationBus
+published: Draft
+---
+---excerpt
+In case of massive XAML files, break here...
+---end
+
 A while back I talked about XAML and Commands, and I mentioned UI decoupling using something like an EventAggregator.  In this post I want to talk about one of the common causes I've seen for Views and ViewModels becoming coupled and cluttered.
 
 The short description of the issue is that composition is not well enough understood and the Views grow to be enormous and complex.  I liken it to writing an entire application in a single class file.

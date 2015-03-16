@@ -1,0 +1,190 @@
+
+<!DOCTYPE html>
+<html dir="ltr" lang="en-US">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta http-equiv="last-modified" content="2015-03-17T08:47:54.8531224+10:00" />
+    <meta name="keywords" content="PresentationBus,XAML" />
+    <title>Shannon's Blog</title>
+    <link rel="stylesheet" type="text/css" href="/stylesheets/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="/stylesheets/blog.css" />
+    <link rel="canonical" href="http://blog.shannonlewis.me/drafts/2015/03/viewcomposition/" />
+</head>
+<body>
+    <div class="blog-masthead">
+        <div class="container">
+            <nav class="navbar navbar-inverse navbar-fixed-top blog-nav" role="navigation">
+                <div class="container">
+                    <div class="navbar-header">
+                        <a href="/" class="navbar-brand">Shannon Lewis</a>
+                    </div>
+                    <div id="navbar" class="navbar-collapse collapse">
+                        <ul class="nav navbar-nav">
+                            <li><a class="blog-nav-item" href="/">Home</a></li>
+                            <li><a class="blog-nav-item" href="/about">About</a></li>
+                            <li><a class="blog-nav-item" href="/category">Categories</a></li>
+                            <li><a class="blog-nav-item" href="/archive">Archive</a></li>
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Subscribe<span class="caret"></span></a>
+                                <ul class="dropdown-menu" role="menu">
+                                    <li><a class="blog-nav-item" href="/rss.xml">RSS</a></li>
+                                    <li><a href="/feed.xml">Atom</a></li>
+                                </ul>
+
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </div>
+    
+    <div class="container">
+        <div class="blog-header">
+            <h1 class="blog-title">Shannon's Blog</h1>
+            <p class="lead blog-description">.NET dev, going mobile</p>
+        </div>        
+        <div class="row">
+            
+            
+
+<div id="blog-post" class="col-sm-8">
+    <h1 class="blog-post-title">Composing views</h1>
+    <p class="blog-post-meta">
+        17 Mar 2015 by <a href="#">Shannon</a>
+    </p>
+
+    
+
+    <p>A while back I talked about XAML and Commands, and I mentioned UI decoupling using something like an EventAggregator.  In this post I want to talk about one of the common causes I've seen for Views and ViewModels becoming coupled and cluttered.</p>
+
+<p>The short description of the issue is that composition is not well enough understood and the Views grow to be enormous and complex.  I liken it to writing an entire application in a single class file.</p>
+
+<p>Thinking about how we get into this position consider how UIs often evolve, especially if there is no clearly defined user experience or UI design in place.  The process often starts with "We need a view that does X", then moves to File/New View and then to throwing controls on the page to get something that functions.  I say functions here because initially the objective is often to see if something works, not whether it looks good and/or is easy to maintain.</p>
+
+<p>There's nothing fundamentally wrong with this approach, but if we were to take that approach with non-UI code we'd usually refactor it once we'd learned from the initial implementation.  This refactoring is what usually gets overlooked in the UI, and so the UI code continues to grow and get more tangled and harder to maintain as we move forward.</p>
+
+<h1>Refactoring the UI</h1>
+
+<p>There are some simple techniques that can help make life easier when building the View. </p>
+
+<h2>Look for Copy/Paste</h2>
+
+<p>As with any code, we often grab pieces of UI code and reuse them down the page.  They usually stand out in the code as a repeated pattern when you scan down the file.  In a class we'd start refactoring this code into methods.  In UI code we refactor this code into a User Control.</p>
+
+<p>There a 2 variations on how you can implement a UserControl.  The first is to create a Xaml file with a CS code behind file (what Visual Studio will create for you if you ask for a new User Control) and the second is to just create the CS file with the behavious and properties and then use Control Templating to provide the layout at runtime.</p>
+
+<p>With the former you cannot replace the layout at runtime, so it's useful for situations where you purely want to separate something whose layout would be the same whereever it is used.  You still get a single place to change the layout, but there is only ever one layout.</p>
+
+<p>The latter is something I refer to as a "look-less" control, because it doesn't inherantly have a layout ("look") you get to provide it with a template at runtime, and can customise it if you need to.  So it is useful where you have a standard set of behaviour and but need to change the exact layout slightly each time you use it.</p>
+
+<h2>Look for responsibilities</h2>
+
+<p>This type of refactoring is usually harder than looking for a repeated pattern, this is about identifying sections that have a single responsibility and/or can be easily isolated from the remainder of the code.</p>
+
+<p>The refectoring is again to create a User Control, although in this case the Xaml with a CS backing file is pretty much always what you want.  Conceptually though, what we are creating is actually another View, so we'd almost always also have a corresponding new ViewModel for the new View.</p>
+
+<h1>Composition</h1>
+
+<p>So what we're doing in the above cases is taking 1 big UI and composing it from a number of smaller pieces.  This doesn't mean that the pieces are completely isolated though, they are still part of a broader picture and have to participate for within that broader scope (the scope being the original View).</p>
+
+<h1>Information flow</h1>
+
+<p>Given that we have these various pieces needing to cooperate, let's talk about the options we have to make that happen.</p>
+
+<h2>Dependency Properties and Binding</h2>
+
+<p>Dependency Properties are built in to the XAML framework.  They define properties of your control that can have their value bound (as in using a Binding).  You can use a "run of the mill" property, and still be able to set it via XAML, if that property isn't something you would need to bind, however this is generally a pretty rare case.</p>
+
+<p>The downside to this approach is that for the binding to work the UI components need to be able to see each other, which given the refactoring we've been doing isn't always possible.  If the UI components are far enough removed in the visual tree they won't be directly visible to each other.</p>
+
+<h2>Messaging</h2>
+
+<p>This is the scenario where the EventAggregator comes into play.  Now at this point let's clarify that despite the name, it doesn't actually Aggregator Events.  What it does is brokers Events between a Publisher and a number of Subscribers.  I'm not exactly sure on the exact origins of the name, but it's been commonly used for the message brokers in a number of frameworks (Unity, Caliburn Micro) for a long time.</p>
+
+<p>As part of several side projects I've worked on, I've also built an implementation of an event broker that I called PresentationBus.  The reasoning being that I think of the events and messaging in terms similar to how we use a Service Bus in Micro Service architecture, but in this scenario we're constrained to the "Presentation Layer".</p>
+
+<p>That's all well and good, but how does it help us in our scenario?  Again, it comes back to similarities with Micro Services architecture.  We have a number of components that we don't want to have direct knowledge of each other, but need to communicate and cooperate together to achieve a goal.</p>
+
+<p>In my next post I'll go through some more about PresentationBus and illustrate some examples of its use.</p>
+
+
+    <div id="disqus_thread"></div>
+<script>
+    var reset_disqus = function(){
+        DISQUS.reset({
+            reload: true,
+            config: function () {
+                //this.page.identifier = '';
+                this.page.url = 'http://blog.shannonlewis.me/drafts/2015/03/viewcomposition/';
+                //this.page.title = '';
+            }
+        });
+    };
+
+    var disqus_shortname = 'slewis';
+    var disqus_url = 'http://blog.shannonlewis.me/drafts/2015/03/viewcomposition/';
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+
+    window.addEventListener('orientationchange', reset_disqus);
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+    <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-51ca97356d8c1454"></script>
+
+</div>
+            
+            <div class="col-sm-3 col-sm-offset-1 blog-sidebar">
+                <div class="sidebar-module sidebar-module-inset">
+                    <h4>About</h4>
+                    <p>.NET/Mobile Developer, Runner, Cyclist and Dad.</p>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+    
+    <footer id="colophon" class="site-footer blog-footer" role="contentinfo">
+        <div class="site-info">
+            Powered by <a href="https://github.com/Sandra/Sandra.Snow" rel="generator">Sandra.Snow</a>.
+        </div>
+        <!-- .site-info -->
+    </footer>
+
+    <!-- #page .hfeed .site -->
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <script src='/javascripts/prettify.js' type='text/javascript'></script>
+    <script src='/javascripts/bootstrap.js' type='text/javascript'></script>
+    <script type='text/javascript'>
+        $(function () {
+            $("pre code").parent().each(function () {
+                if (!$(this).hasClass("prettyprint")) {
+                    $(this).addClass("prettyprint");
+                    a = true
+                }
+            });
+
+            prettyPrint();
+        });
+    </script>
+    <script>
+        (function (i, s, o, g, r, a, m) {
+            i['GoogleAnalyticsObject'] = r; i[r] = i[r] || function () {
+                (i[r].q = i[r].q || []).push(arguments)
+            }, i[r].l = 1 * new Date(); a = s.createElement(o),
+                m = s.getElementsByTagName(o)[0]; a.async = 1; a.src = g; m.parentNode.insertBefore(a, m)
+        })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
+
+        ga('create', 'UA-51930463-1', 'shannonlewis.me');
+        ga('send', 'pageview');
+
+    </script>
+</body>
+</html>
