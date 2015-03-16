@@ -40,6 +40,12 @@ h6, .h6 {
 /*
  * Masthead for nav
  */
+ 
+ .navbar-header > img {
+	width: 40px;
+	float: left;
+	margin-right: 5px;
+ }
 
 .blog-masthead {
   background-color: #428bca;
