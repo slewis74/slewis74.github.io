@@ -3,6 +3,9 @@ layout: post
 title: Xamarin, Android and Parallels
 categories: Xamarin, Android, Parallels
 ---
+---excerpt
+In this post I'll go through some options for debugging Android applications using Visual Studio and Xamarin Studio.
+---end
 In working on a recent project I tried a couple of different debugging configurations while developing an Android app.
 
 Following is what I learned along the way...

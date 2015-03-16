@@ -4,12 +4,9 @@
   Layout = "default.cshtml";
 }
 
-  <header>
-  <div class="head-inner">
-    <h1><a href="/category/">Categories</a> - @Model.Category.Name</h1>
-  </div>
-  </header>
-
+<div class="col-sm-8">
+	<h2><a href="/category/">Categories</a> - @Model.Category.Name</h2>
+  
   <ul class="category-list fancy-container orange">
     @foreach(var catInPost in Model.PostsInCategory){
       <li>
@@ -19,3 +16,4 @@
     }
   </ul>
   
+</div> 

@@ -4,9 +4,9 @@
   Layout = "default.cshtml";
 }
 
-<h1>Archives</h1>
-
-
+<div class="col-sm-8">
+	<h2>Archives</h2>
+  
 @foreach(var year in Model.PostsGroupedByYearThenMonth)
 {
   @foreach(var month in year.Value)
@@ -21,3 +21,5 @@
     </ul>
   }
 }
+  
+</div>

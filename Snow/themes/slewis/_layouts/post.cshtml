@@ -4,20 +4,18 @@
   Layout = "default.cshtml";
 }
 
-<div id="post">
-    <h1>@Model.Title</h1>
+<div id="blog-post" class="col-sm-8">
+    <h1 class="blog-post-title">@Model.Title</h1>
+    <p class="blog-post-meta">
+        @Model.PostDate.ToString("dd MMM yyyy") by <a href="#">Shannon</a>
+    </p>
 
-    <div class="post-note">
-		<h2 class="postedBy">Shannon Lewis</h2>
-		<h2 class="postedOn">@Model.PostDate.ToString("dd MMM yyyy")</h2>
-    </div>
-    
     @Html.RenderSeries()
-        
+
     @Html.Raw(Model.PostContent)
 
     @Html.RenderDisqusComments("slewis")
-    
+
     <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-51ca97356d8c1454"></script>
 
 </div>

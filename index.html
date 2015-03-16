@@ -4,266 +4,82 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
-    <meta http-equiv="last-modified" content="2014-06-21T21:46:02.4155238+10:00" />
+    <meta http-equiv="last-modified" content="2015-03-17T07:59:35.9898411+10:00" />
     <meta name="keywords" content="Android,Commands,Parallels,Xamarin,XAML" />
     <title>Shannon's Blog</title>
-    <link rel="stylesheet" type="text/css" href="/stylesheets/style.css" />
+    <link rel="stylesheet" type="text/css" href="/stylesheets/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="/stylesheets/blog.css" />
     <link rel="canonical" href="http://blog.shannonlewis.me/" />
 </head>
-<body class="home blog">
-    <div id="page" class="hfeed site">
-        <header id="masthead" class="site-header fancy-container lightgreen" role="banner">
-            <hgroup>
-                <h1 class="site-title"><a href="/" title="Shannon's Blog" rel="home">Shannon's Blog</a></h1>
-                <h2><small>.NET dev, going mobile</small></h2>
-                <p class="site-description">.NET/Mobile Developer, Runner, Cyclist and Dad.</p>
-            </hgroup>
-            <nav role="navigation" class="site-navigation main-navigation">
-                <h1 class="assistive-text">Menu</h1>
-                <div class="assistive-text skip-link"><a href="#content" title="Skip to content">Skip to content</a></div>
-                <div class="menu">
-                    <ul>
-                        <li><a href="/about">About</a></li>
-                        <li><a href="/category">Categories</a></li>
-                        <li><a href="/archive">Archive</a></li>
-                        <li><a href="/rss.xml">RSS</a> / <a href="/feed.xml">Atom</a></li>
-                    </ul>
+<body>
+    <div class="blog-masthead">
+        <div class="container">
+            <nav class="navbar navbar-inverse navbar-fixed-top blog-nav" role="navigation">
+                <div class="container">
+                    <div class="navbar-header">
+                        <a href="/" class="navbar-brand">Shannon Lewis</a>
+                    </div>
+                    <div id="navbar" class="navbar-collapse collapse">
+                        <ul class="nav navbar-nav">
+                            <li><a class="blog-nav-item" href="/">Home</a></li>
+                            <li><a class="blog-nav-item" href="/about">About</a></li>
+                            <li><a class="blog-nav-item" href="/category">Categories</a></li>
+                            <li><a class="blog-nav-item" href="/archive">Archive</a></li>
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Subscribe<span class="caret"></span></a>
+                                <ul class="dropdown-menu" role="menu">
+                                    <li><a class="blog-nav-item" href="/rss.xml">RSS</a></li>
+                                    <li><a href="/feed.xml">Atom</a></li>
+                                </ul>
+
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </nav>
-        </header>
-        <div id="main">
-            <div id="primary" class="site-content">
-                <div id="content" role="main">
-                  
-  <ul class="posts">
-    <li class="fancy-container lightblue">
-      <h1>
-        <a href="/2014/06/xaml-commands-and-user-feedback/">Commands not executing, but why?</a> 
-        <span>12 Jun 2014</span>
-      </h1> 
-      
-      <p>So now that you've <a href="/2014/06/xaml-commands/">embraced commands</a>, let's look at how we might provide a slightly better experience for users.</p>
-
-<h2>But why can't I execute?</h2>
-
-<p>In several WPF projects I've worked on we've had the requirement to feedback information to the user about why a button cannot currently execute.  Usually this will be due to some sort of validation condition failing.</p>
-
-<p>Enter a weakness in ICommand.  It provides</p>
-
-<pre><code>bool CanExecute(object value);
-</code></pre>
-
-<p>for you to implement logic to determine whether the command can execute, given a parameter value.  The limitation is that you can't provide explanation as to why the command can't execute.</p>
-
-<p>For these scenarios, a base class along the lines of the following has worked well</p>
-
-<pre><code>public abstract class Command : ICommand, INotifyPropertyChanged
-{
-    public event EventHandler CanExecuteChanged;
-
-    public bool CanExecute(object value)
-    {
-        return Errors.Any() == false;
-    }
-
-    public bool HasErrors { get { return Errors.Any(); } }
-
-    public virtual IEnumerable&lt;string&gt; Errors
-    {
-        get
-        {
-            return Enumerable.Empty&lt;string&gt;();
-        }
-    }
-
-    public void Execute(object value)
-    {
-        if (!CanExecute(value))
-            return;
-        DoExecute(value);
-    }
-
-    protected abstract void DoExecute(object value);
-
-    protected void RaiseCanExecuteChanged()
-    {
-        var handler = CanExecuteChanged;
-        if (handler != null)
-        {
-            handler(this, EventArgs.Empty);
-        }
-        NotifyChanged("HasErrors");
-    }
-
-    private void NotifyChanged(string propertyName)
-    {
-        // details intentionally left blank
-    }
-}
-</code></pre>
-
-<p>So now with <a href="http://msdn.microsoft.com/en-us/library/system.windows.controls.tooltipservice.showondisabled(v=vs.110).aspx">a little bit of trickery</a>, you can bind up a button along the lines of</p>
-
-<pre><code>&lt;Button
-    Command="{Binding SomeCommand}" 
-    ToolTipService.ShowOnDisabled="True" 
-    Content="Disabled Button"&gt;
-    &lt;Button.ToolTip Visibility="{Binding SomeCommand.HasErrors, Converter={StaticResource BooleanToVisibilityConverter}}"&gt;
-        &lt;ToolTip&gt;
-            &lt;ItemsControl ItemsSource="{Binding SomeCommand.Errors}"/&gt;
-        &lt;/ToolTip&gt;
-    &lt;/Button.ToolTip&gt;
-&lt;/Button&gt; 
-</code></pre>
-
-<p>Depending on the application, and the likelihood of a large list of errors, you may also need to extend this to include some fixed sizing of the Tooltip and a ScrollViewer.</p>
-
-<h2>Mobile XAML</h2>
-
-<p>In mobile apps you don't have the same options for user feedback, Tooltips don't exist in that world, but the errors are likely to still be useful to the user. I'm still looking for a good solution in the mobile space, so stay tuned. </p>
-
-      <p><a href="/2014/06/xaml-commands-and-user-feedback/">Read more...</a></p>
-    </li>
-    <li class="fancy-container lightblue">
-      <h1>
-        <a href="/2014/06/xamarin-android-parallels/">Xamarin, Android and Parallels</a> 
-        <span>11 Jun 2014</span>
-      </h1> 
-      
-      <p>In working on a recent project I tried a couple of different debugging configurations while developing an Android app.</p>
-
-<p>Following is what I learned along the way...</p>
-
-<h2>My setup</h2>
-
-<p>Before we go too far, I'm running a Mac Book Pro with Mavericks, Parallels 9 and a Windows 8.1 VM.  </p>
-
-<h2>Android Emulators</h2>
-
-<p>I'll jump ahead slightly here to talk emulators.  There are a couple of options available.</p>
-
-<p>The option most popular with others on the recent project team was the <a href="http://www.genymotion.com/" title="GenyMotion">GenyMotion</a> emulator.  It is fast and robust, but it isn't free.</p>
-
-<p>I went with the emulator that comes with the SDK and found it to be quite workable, assuming you have the Intel HAXM working and you don't move it onto your second display (<a href="https://code.google.com/p/android/issues/detail?id=38371">if you do it will crash next time you start it</a>).</p>
-
-<h3>Intel HAXM Hotfix</h3>
-
-<p>There was an issue with earlier versions of Intel HAXM when running in conjunction with Parallels.  The <a href="https://software.intel.com/en-us/blogs/2013/11/06/intelr-haxm-hot-ffixes-for-os-x-mavericks-109-and-windows-81-available-for" title="hotfix">hotfix</a> would previously have to be installed manually, but should now be included in the Intel HAXM installer.</p>
-
-<p>You'll know if it's not applied, because when you try to start an x86 based emulator image it'll hang the entire machine.</p>
-
-<h2>Installing the Android SDK(s)</h2>
-
-<p>The Xamarin installer will install the Android SDK with a number of defaults.</p>
-
-<p>A lesson I learned quickly was to be selective when installing support for extra versions.  If you simply tick the top level checkbox for a given API level, in the SDK Manager, it will install the SDK plus a number of emulator images, most of which you don't want.  I stuck to installing just the SDK and the x86 emulator image, in OS X.  In the Windows VM I had no intention of running the emulator so only installed the SDK itself. </p>
-
-<h2>Debugging</h2>
-
-<p>Debugging from Xamarin Studio in OS X was straightforward and worked without any real issue or special configuration.</p>
-
-<h3>Preserving data</h3>
-
-<p>Depending on your app, you may want to find the option to stop the app data from being cleared on each deploy.  The default setting, in both Xamarin Studio and Visual Studio, will clear all app data from the emulator/device every time you run the app.</p>
-
-<p>To changing the setting in Xamarin Studio:</p>
-
-<ul>
-<li>Open the Preferences window</li>
-<li>Locate the Projects/Android settings</li>
-<li>Tick the "Preserve data/cache between application deploys"</li>
-</ul>
-
-<p>In Visual Studio:</p>
-
-<ul>
-<li>Open the Tools/Options window</li>
-<li>Locate the Xamarin/Android settings</li>
-<li>Tick the "Preserve data/cache between application deploys"</li>
-</ul>
-
-<h3>Parallels</h3>
-
-<p>For part of the project I developed using Xamarin Studio in OS X.  This worked, to a point, but for a number of reasons that I won't go into here I wanted to get back to Visual Studio.</p>
-
-<p>Being new to OS X, Xamarin and Android I came in with a steep learning curve in front of me.  Fortunately <a href="http://chrisriesgo.com/android-emulator-debugging-from-parallels-to-os-x/">others had already blazed a trail</a>, and <a href="http://stackoverflow.com/questions/1754162/remote-debugging-with-android-emulator">with a little extra help</a> I was well on the way.  </p>
-
-<p>Some further notes to this:</p>
-
-<ul>
-<li>When you need the Android SDK path is shown at the top of the Android SDK Manager window </li>
-<li>ADB ends up in your profile folder, in Windows. For me, the following script worked<br/><br/>
-<strong>"%USERPROFILE%\AppData\Local\Android\android-sdk\platform-tools\adb" kill-server</strong> 
-<strong>"%USERPROFILE%\AppData\Local\Android\android-sdk\platform-tools\adb" start-server</strong>
-<strong>"%USERPROFILE%\AppData\Local\Android\android-sdk\platform-tools\adb" devices</strong><br/><br/></li>
-<li>Xamarin Studio may sometimes require a Refresh to see the emulator correctly in the list of available devices.</li>
-<li>Visual Studio must be started after the emulator and all other SSH config.  It will only display the emulators it can see when it first starts.  <strong>If the list changes, you must restart Visual Studio</strong>.</li>
-<li>When configuring the SSH tunnel in PuTTY, the name/IP required can change depending on the network you are connected to.  If the Remote Login settings in OS X read like an IP address then use that IP address, if they don't then use the exact value shown.</li>
-<li>The Remote Login settings in OS X show <em>username</em>@<em>machinename</em>.  The <strong><em>username</em>@</strong> can also be used in front of the IP/machine name in the PuTTY config, so you don't have to type the admin username each time you connect it, you'll just need to type the password. </li>
-</ul>
-
-      <p><a href="/2014/06/xamarin-android-parallels/">Read more...</a></p>
-    </li>
-    <li class="fancy-container lightblue">
-      <h1>
-        <a href="/2014/06/xaml-commands/">XAML and Commands</a> 
-        <span>09 Jun 2014</span>
-      </h1> 
-      
-      <p>During a recent discussion with some developers new to XAML we got onto the topic of Commands.  During the discussion I went over some experiences from previous projects, with  emphasise on one particular pain point. </p>
-
-<h2>Where does it hurt?</h2>
-
-<p>One of the most common pain points I've come across relates to implementations around the command pattern.  The particular pain comes down to the <a href="http://en.wikipedia.org/wiki/Command_pattern">receiver</a> being a ViewModel.  This works for simple cases, but can quickly lead to bloating and the ViewModel taking on too many responsibilities/personalities.</p>
-
-<p>What does the manifestation look like?</p>
-
-<h3>DelegateCommand/RelayCommand</h3>
-
-<p>Included in many of the XAML/MVVM frameworks is the concept of a delegate command.  This is an implementation of ICommand that takes an Action to execute and a Func<bool> to determine CanExecute.  In the constructor you'll see something like this</p>
-
-<pre><code>SomeCommand = new DelegateCommand(() =&gt; DoSomething(), () =&gt; someCondition);
-</code></pre>
-
-<p>Then throughout your view model you will then find </p>
-
-<pre><code>SomeCommand.RaiseCanExecuteChanged();
-</code></pre>
-
-<p>anywhere there's code that could change the result of the CanExecute condition.</p>
-
-<h3>No commands</h3>
-
-<p>A variation on this is used by Caliburn Micro.  What it does differently is that the ViewModel code doesn't use an ICommand derived command object.  It instead relies on methods and properties on the ViewModel, which it then wires to UI triggers and enabled properties.  There's no object to create, so no code in the constructor, but you'll find something like this</p>
-
-<pre><code>public bool CanDoSomething { get { return someCondition; } }
-
-public void DoSomething()
-{
-    // execute stuff here
-}
-</code></pre>
-
-<p>Then throughout your view model you will then find </p>
-
-<pre><code>NotifyChanged(() =&gt; CanDoSomething);
-</code></pre>
-
-<p>anywhere there's code that could change the result of the CanExecute condition.</p>
-
-<h3>So what's wrong with all this?</h3>
-
-<p>As I mentioned earlier, this is all workable for simple scenarios but gets unwieldy pretty quickly as screen complexity/number of commands increases.  I've come into code bases for complex WPF applications that have used this style of commands and it isn't fun, with ViewModels having blown out to thousands of lines of tangled code. </p>
-
-<h3>Embrace the commands</h3>
-
-<p>So my advice, embrace the commands.  Abstract the command functionality away from the ViewModel code and write command objects.</p>
-
-<p>Also, decouple the ViewModel and the Command implementation.  Commands that take a "parent" ViewModel in their constructor and wire themselves to events (think PropertyChanged, ObservableCollection.CollectionChanged etc) will lead to trouble and be hard to test.  I've had much better results through decoupling using an EventAggregator.  I'll save further discussion on decoupling and EventAggretion for another time.  </p>
-
-      <p><a href="/2014/06/xaml-commands/">Read more...</a></p>
-    </li>
-  </ul> 
+        </div>
+    </div>
+    
+    <div class="container">
+        <div class="blog-header">
+            <h1 class="blog-title">Shannon's Blog</h1>
+            <p class="lead blog-description">.NET dev, going mobile</p>
+        </div>        
+        <div class="row">
+            
+            
+  <div class="col-sm-8 blog-main">
+        <div class="blog-post">
+            <h2 class="blog-post-title"><a href="/2014/06/xaml-commands-and-user-feedback/">Commands not executing, but why?</a></h2>
+            <p class="blog-post-meta">
+                12 Jun 2014 by <a href="#">Shannon</a>
+            </p> 
+            
+            <p>So now that you've <a href="/2014/06/xaml-commands/">embraced commands</a>, let's look at how we might provide a slightly better experience for users.</p>
+
+            <p><a href="/2014/06/xaml-commands-and-user-feedback/">Read more...</a></p>
+        </div>
+        <div class="blog-post">
+            <h2 class="blog-post-title"><a href="/2014/06/xamarin-android-parallels/">Xamarin, Android and Parallels</a></h2>
+            <p class="blog-post-meta">
+                11 Jun 2014 by <a href="#">Shannon</a>
+            </p> 
+            
+            <p>In this post I'll go through some options for debugging Android applications using Visual Studio and Xamarin Studio.</p>
+
+            <p><a href="/2014/06/xamarin-android-parallels/">Read more...</a></p>
+        </div>
+        <div class="blog-post">
+            <h2 class="blog-post-title"><a href="/2014/06/xaml-commands/">XAML and Commands</a></h2>
+            <p class="blog-post-meta">
+                09 Jun 2014 by <a href="#">Shannon</a>
+            </p> 
+            
+            <p>A look at the pitfalls of DelegateCommands, and the alternatives.</p>
+
+            <p><a href="/2014/06/xaml-commands/">Read more...</a></p>
+        </div>
+  </div> 
 
   <!-- Pagination links -->
   <div id="post-pagination" class="pagination">
@@ -276,64 +92,45 @@ public void DoSomething()
   </div>
 
 
+            
+            <div class="col-sm-3 col-sm-offset-1 blog-sidebar">
+                <div class="sidebar-module sidebar-module-inset">
+                    <h4>About</h4>
+                    <p>.NET/Mobile Developer, Runner, Cyclist and Dad.</p>
                 </div>
-                <!-- #content -->
             </div>
-            <!-- #primary .site-content -->
-
-            <div id="secondary" class="widget-area fancy-container lightred" role="complementary">
-                <aside id="text-5" class="widget widget_text">
-                    <h1 class="widget-title">Follow</h1>
-                    <div class="textwidget logos">
-                        <a href="https://github.com/slewis74" onclick="javascript:_gaq.push(['_trackEvent','outbound-widget','http://github.com']);"><img src="/stylesheets/images/github.png"></a>
-                    </div>
-                    
-                </aside>
-                <aside id="archives-4" class="widget widget_archive">
-                    <h1 class="widget-title">Archive</h1>
-                    <ul class="posts">
-                          <li><a href="/archive#20146">June, 2014</a></li>
-                    </ul>
-                </aside>
-            </div>
-            <!-- #secondary .widget-area -->
-
-
+            
         </div>
-        <!-- #main -->
+    </div>
+    
+    <footer id="colophon" class="site-footer blog-footer" role="contentinfo">
+        <div class="site-info">
+            Powered by <a href="https://github.com/Sandra/Sandra.Snow" rel="generator">Sandra.Snow</a>.
+        </div>
+        <!-- .site-info -->
+    </footer>
 
-        <footer id="colophon" class="site-footer" role="contentinfo">
-            <div class="site-info">
-                Powered by <a href="https://github.com/Sandra/Sandra.Snow" rel="generator">Sandra.Snow</a>.	
-            </div>
-            <!-- .site-info -->
-        </footer>
-        <!-- #colophon .site-footer -->
+    <div id="page" class="hfeed site">
+        
+        
+        <!-- #main -->
     </div>
     <!-- #page .hfeed .site -->
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
     <script src='/javascripts/prettify.js' type='text/javascript'></script>
+    <script src='/javascripts/bootstrap.js' type='text/javascript'></script>
     <script type='text/javascript'>
-      $(function () {
-        $("pre code").parent().each(function () {
-          if (!$(this).hasClass("prettyprint")) {
-            $(this).addClass("prettyprint");
-            a = true
-          }
+        $(function () {
+            $("pre code").parent().each(function () {
+                if (!$(this).hasClass("prettyprint")) {
+                    $(this).addClass("prettyprint");
+                    a = true
+                }
+            });
+
+            prettyPrint();
         });
-
-        prettyPrint();
-      });
     </script>
-	<script>
-  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
-  ga('create', 'UA-51930463-1', 'shannonlewis.me');
-  ga('send', 'pageview');
-
-	</script>
+    
 </body>
 </html>

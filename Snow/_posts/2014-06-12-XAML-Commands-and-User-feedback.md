@@ -3,6 +3,9 @@ layout: post
 title: Commands not executing, but why?
 categories: XAML, Commands
 ---
+---excerpt
+So now that you've [embraced commands](/2014/06/xaml-commands/), let's look at how we might provide a slightly better experience for users.
+---end
 So now that you've [embraced commands](/2014/06/xaml-commands/), let's look at how we might provide a slightly better experience for users.
 
 ## But why can't I execute?

@@ -3,6 +3,9 @@ layout: post
 title: XAML and Commands
 categories: XAML, Commands
 ---
+---excerpt
+A look at the pitfalls of DelegateCommands, and the alternatives.
+---end
 During a recent discussion with some developers new to XAML we got onto the topic of Commands.  During the discussion I went over some experiences from previous projects, with  emphasise on one particular pain point. 
 
 ## Where does it hurt?

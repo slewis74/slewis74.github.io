@@ -3,16 +3,12 @@
 @{
   Layout = "default.cshtml";
 }
-
-  <header>
-  <div class="head-inner">
-    <h1>Categories</h1>
-  </div>
-  </header>
+<div class="col-sm-8">
+	<h2>Categories</h2>
   
-  <ul class="category-list fancy-container darkishblue">
-    @foreach(var category in Model.AllCategories){
-      <li><a href="/category/@category.Url" title="@category.Name">@category.Name</a></li>
-    }
-  </ul>
-  
+	<ul class="category-list fancy-container darkishblue">
+		@foreach(var category in Model.AllCategories){
+			<li><a href="/category/@category.Url" title="@category.Name">@category.Name</a></li>
+		}
+	</ul>
+</div> 
