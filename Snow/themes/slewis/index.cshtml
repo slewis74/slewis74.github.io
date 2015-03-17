@@ -8,11 +8,10 @@
         <div class="blog-post">
             <h2 class="blog-post-title"><a href="@postPaged.Url">@postPaged.Title</a></h2>
             <p class="blog-post-meta">
-                @postPaged.Date.ToString("dd MMM yyyy") by <a href="#">Shannon</a>
+                @postPaged.Date.ToString("dd MMM yyyy")
             </p> 
             @Html.RenderSeries(postPaged)
             @Html.Raw(postPaged.ContentExcerpt)
-            <p><a href="@postPaged.Url">Read more...</a></p>
         </div>
     }
   </div> 

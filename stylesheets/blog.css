@@ -41,12 +41,6 @@ h6, .h6 {
  * Masthead for nav
  */
  
- .navbar-header > img {
-	width: 40px;
-	float: left;
-	margin-right: 5px;
- }
-
 .blog-masthead {
   background-color: #428bca;
   -webkit-box-shadow: inset 0 -2px 5px rgba(0,0,0,.1);
@@ -104,6 +98,7 @@ h6, .h6 {
   font-size: 60px;
   font-weight: normal;
 }
+
 .blog-description {
   font-size: 20px;
   color: #999;
@@ -135,6 +130,12 @@ h6, .h6 {
   margin-bottom: 0;
 }
 
+.sidebar-module-inset > img {
+	width: 90px;
+	float: left;
+	margin-right: 5px;
+	margin-bottom: 5px;
+}
 
 /* Pagination */
 .pager {
@@ -156,13 +157,26 @@ h6, .h6 {
 .blog-post {
   margin-bottom: 60px;
 }
+.blog-post > p  a {
+	color: #333;
+	font-weight: bold;
+}
+
 .blog-post-title {
   margin-bottom: 5px;
   font-size: 40px;
 }
+.blog-post-title a {
+	color: #333
+}
+
 .blog-post-meta {
   margin-bottom: 20px;
   color: #999;
+}
+
+.blog-post-meta  a {
+	color: #333
 }
 
 
