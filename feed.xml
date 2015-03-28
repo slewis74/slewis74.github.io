@@ -1,4 +1,43 @@
-<feed xmlns="http://www.w3.org/2005/Atom"><title type="text">Shannon's Blog</title><subtitle type="text">Shannon's Blog</subtitle><id>http://blog.shannonlewis.me/</id><updated>2015-03-18T08:48:58+10:00</updated><author><name>Shannon Lewis</name><uri>http://blog.shannonlewis.me</uri><email>slewis74@gmail.com</email></author><generator>Sandra.Snow Atom Generator</generator><link rel="alternate" href="http://blog.shannonlewis.me/feed.xml" /><link rel="self" type="text/html" title="Shannon's Blog" href="http://blog.shannonlewis.me/feed.xml" /><entry><id>http://blog.shannonlewis.me/2014/06/xaml-commands-and-user-feedback/</id><title type="text">Commands not executing, but why?</title><summary type="html">&lt;p&gt;So now that you've &lt;a href="http://blog.shannonlewis.me/2014/06/xaml-commands/"&gt;embraced commands&lt;/a&gt;, let's look at how we might provide a slightly better experience for users.&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title type="text">Shannon's Blog</title><subtitle type="text">Shannon's Blog</subtitle><id>http://blog.shannonlewis.me/</id><updated>2015-03-28T12:32:30+10:00</updated><author><name>Shannon Lewis</name><uri>http://blog.shannonlewis.me</uri><email>slewis74@gmail.com</email></author><generator>Sandra.Snow Atom Generator</generator><link rel="alternate" href="http://blog.shannonlewis.me/feed.xml" /><link rel="self" type="text/html" title="Shannon's Blog" href="http://blog.shannonlewis.me/feed.xml" /><entry><id>http://blog.shannonlewis.me/2015/03/mvvm/</id><title type="text">Model-View-ViewModel</title><summary type="html">&lt;p&gt;Don't forget the first M!&lt;/p&gt;
+</summary><published>2015-03-26T14:00:00Z</published><updated>2015-03-26T14:00:00Z</updated><link rel="alternate" href="http://blog.shannonlewis.me/2015/03/mvvm/" /><content type="html">&lt;p&gt;As a consultant focused in the WPF and Mobile development spaces I've spent a lot of time in the world of MVVM.  I've seen lots of different frameworks and lots of different ideas around implementing MVVM.&lt;/p&gt;
+
+&lt;p&gt;One thing that I've seen frequently cause confusion is the first M.  To help explain that statement, here are the typical ways I try to describe MVVM to people.&lt;/p&gt;
+
+&lt;h1&gt;What is MVVM?&lt;/h1&gt;
+
+&lt;p&gt;Model-View-ViewModel. That's what it's short for.&lt;/p&gt;
+
+&lt;p&gt;MVVM is an adaptation of MVP and MVC, adjusted to play to the strengths of XAML's binding abilities. &lt;/p&gt;
+
+&lt;p&gt;It also abstracts the visual behaviour away from the View and into a ViewModel, which is just a class at the end of the day, and in doing so it becomes possible to unit test the visual behaviour without an actual UI.&lt;/p&gt;
+
+&lt;h1&gt;What is a Model?&lt;/h1&gt;
+
+&lt;p&gt;A Model represents data.  The data may be a single entity, it might be an aggregate of multiple model entities.
+Its responsibility is to hold the data and notify others when changes occur.  It is the Domain Model of your client app.&lt;/p&gt;
+
+&lt;p&gt;A model object &lt;strong&gt;instance&lt;/strong&gt; may be shared between ViewModel instances.&lt;/p&gt;
+
+&lt;h1&gt;What is a View Model?&lt;/h1&gt;
+
+&lt;p&gt;A View Model represents the visual state of the data, and encapsulates the visual behaviour around that data.  It may project the data stored in a model (e.g. FullName may project "Surname, FirstName"), but it's responsibility is to hold the transient, visual state of the data.  IsSelected, IsChecked, IsEnabled, SelectedItem are examples of the types of properties on a ViewModel, they are not persisted but are important to the visualisation of the data.&lt;/p&gt;
+
+&lt;p&gt;A ViewModel &lt;strong&gt;type&lt;/strong&gt; may be shared between Views, but there be dragons here.  Only do this if the visual behaviour required &lt;strong&gt;is identical&lt;/strong&gt;.  If it isn't identical then you will be tempted into adding multiple personalities to the ViewModel, and violating the "Single Responsibility" principle. &lt;/p&gt;
+
+&lt;h1&gt;What is a View?&lt;/h1&gt;
+
+&lt;p&gt;A View presents the data to a user, through the use of ViewModels and Models.  A View can use a Model directly, if there is no requirement for visual state.&lt;/p&gt;
+
+&lt;p&gt;A View may also consist of sub-Views.&lt;/p&gt;
+
+&lt;h1&gt;Don't forget the first M!&lt;/h1&gt;
+
+&lt;p&gt;So back to my earlier statement, many implementations I've seen have lots of Views and ViewModels, but not a Model in sight.  The first M (Model) gets neglected.&lt;/p&gt;
+
+&lt;p&gt;When you dig deeper there usually are Models, but they've been called ViewModels.  How does the code get to this point?  I think it's often that the pattern is well understood and the team get into the habit of just calling everything a ViewModel, then they start share something called a ViewModel (but is actually a Model) between Views, then they get into the habit of doing that, then they start sharing ViewModels that really is are ViewModels between Views, then the dragons...&lt;/p&gt;
+
+&lt;p&gt;So please, take the time to think about the first M! &lt;/p&gt;
+</content></entry><entry><id>http://blog.shannonlewis.me/2014/06/xaml-commands-and-user-feedback/</id><title type="text">Commands not executing, but why?</title><summary type="html">&lt;p&gt;So now that you've &lt;a href="http://blog.shannonlewis.me/2014/06/xaml-commands/"&gt;embraced commands&lt;/a&gt;, let's look at how we might provide a slightly better experience for users.&lt;/p&gt;
 </summary><published>2014-06-11T14:00:00Z</published><updated>2014-06-11T14:00:00Z</updated><link rel="alternate" href="http://blog.shannonlewis.me/2014/06/xaml-commands-and-user-feedback/" /><content type="html">&lt;p&gt;So now that you've &lt;a href="http://blog.shannonlewis.me/2014/06/xaml-commands/"&gt;embraced commands&lt;/a&gt;, let's look at how we might provide a slightly better experience for users.&lt;/p&gt;
 
 &lt;h2&gt;But why can't I execute?&lt;/h2&gt;

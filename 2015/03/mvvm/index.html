@@ -5,11 +5,11 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
     <meta http-equiv="last-modified" content="2015-03-28T12:32:27.8015416+10:00" />
-    <meta name="keywords" content="Commands,XAML" />
+    <meta name="keywords" content="MVVM,XAML" />
     <title>Shannon's Blog</title>
     <link rel="stylesheet" type="text/css" href="/stylesheets/bootstrap.min.css" />
     <link rel="stylesheet" type="text/css" href="/stylesheets/blog.css" />
-    <link rel="canonical" href="http://blog.shannonlewis.me/2014/06/xaml-commands-and-user-feedback/" />
+    <link rel="canonical" href="http://blog.shannonlewis.me/2015/03/mvvm/" />
 </head>
 <body>
     <div class="blog-masthead">
@@ -50,92 +50,51 @@
             
 
 <div id="blog-post" class="col-sm-8">
-    <h1 class="blog-post-title">Commands not executing, but why?</h1>
+    <h1 class="blog-post-title">Model-View-ViewModel</h1>
     <p class="blog-post-meta">
-        12 Jun 2014
+        27 Mar 2015
     </p>
 
     
 
-    <p>So now that you've <a href="/2014/06/xaml-commands/">embraced commands</a>, let's look at how we might provide a slightly better experience for users.</p>
+    <p>As a consultant focused in the WPF and Mobile development spaces I've spent a lot of time in the world of MVVM.  I've seen lots of different frameworks and lots of different ideas around implementing MVVM.</p>
 
-<h2>But why can't I execute?</h2>
+<p>One thing that I've seen frequently cause confusion is the first M.  To help explain that statement, here are the typical ways I try to describe MVVM to people.</p>
 
-<p>In several WPF projects I've worked on we've had the requirement to feedback information to the user about why a button cannot currently execute.  Usually this will be due to some sort of validation condition failing.</p>
+<h1>What is MVVM?</h1>
 
-<p>Enter a weakness in ICommand.  It provides</p>
+<p>Model-View-ViewModel. That's what it's short for.</p>
 
-<pre><code>bool CanExecute(object value);
-</code></pre>
+<p>MVVM is an adaptation of MVP and MVC, adjusted to play to the strengths of XAML's binding abilities. </p>
 
-<p>for you to implement logic to determine whether the command can execute, given a parameter value.  The limitation is that you can't provide explanation as to why the command can't execute.</p>
+<p>It also abstracts the visual behaviour away from the View and into a ViewModel, which is just a class at the end of the day, and in doing so it becomes possible to unit test the visual behaviour without an actual UI.</p>
 
-<p>For these scenarios, a base class along the lines of the following has worked well</p>
+<h1>What is a Model?</h1>
 
-<pre><code>public abstract class Command : ICommand, INotifyPropertyChanged
-{
-    public event EventHandler CanExecuteChanged;
+<p>A Model represents data.  The data may be a single entity, it might be an aggregate of multiple model entities.
+Its responsibility is to hold the data and notify others when changes occur.  It is the Domain Model of your client app.</p>
 
-    public bool CanExecute(object value)
-    {
-        return Errors.Any() == false;
-    }
+<p>A model object <strong>instance</strong> may be shared between ViewModel instances.</p>
 
-    public bool HasErrors { get { return Errors.Any(); } }
+<h1>What is a View Model?</h1>
 
-    public virtual IEnumerable&lt;string&gt; Errors
-    {
-        get
-        {
-            return Enumerable.Empty&lt;string&gt;();
-        }
-    }
+<p>A View Model represents the visual state of the data, and encapsulates the visual behaviour around that data.  It may project the data stored in a model (e.g. FullName may project "Surname, FirstName"), but it's responsibility is to hold the transient, visual state of the data.  IsSelected, IsChecked, IsEnabled, SelectedItem are examples of the types of properties on a ViewModel, they are not persisted but are important to the visualisation of the data.</p>
 
-    public void Execute(object value)
-    {
-        if (!CanExecute(value))
-            return;
-        DoExecute(value);
-    }
+<p>A ViewModel <strong>type</strong> may be shared between Views, but there be dragons here.  Only do this if the visual behaviour required <strong>is identical</strong>.  If it isn't identical then you will be tempted into adding multiple personalities to the ViewModel, and violating the "Single Responsibility" principle. </p>
 
-    protected abstract void DoExecute(object value);
+<h1>What is a View?</h1>
 
-    protected void RaiseCanExecuteChanged()
-    {
-        var handler = CanExecuteChanged;
-        if (handler != null)
-        {
-            handler(this, EventArgs.Empty);
-        }
-        NotifyChanged("HasErrors");
-    }
+<p>A View presents the data to a user, through the use of ViewModels and Models.  A View can use a Model directly, if there is no requirement for visual state.</p>
 
-    private void NotifyChanged(string propertyName)
-    {
-        // details intentionally left blank
-    }
-}
-</code></pre>
+<p>A View may also consist of sub-Views.</p>
 
-<p>So now with <a href="http://msdn.microsoft.com/en-us/library/system.windows.controls.tooltipservice.showondisabled(v=vs.110).aspx">a little bit of trickery</a>, you can bind up a button along the lines of</p>
+<h1>Don't forget the first M!</h1>
 
-<pre><code>&lt;Button
-    Command="{Binding SomeCommand}" 
-    ToolTipService.ShowOnDisabled="True" 
-    Content="Disabled Button"&gt;
-    &lt;Button.ToolTip Visibility="{Binding SomeCommand.HasErrors, Converter={StaticResource BooleanToVisibilityConverter}}"&gt;
-        &lt;ToolTip&gt;
-            &lt;ItemsControl ItemsSource="{Binding SomeCommand.Errors}"/&gt;
-        &lt;/ToolTip&gt;
-    &lt;/Button.ToolTip&gt;
-&lt;/Button&gt; 
-</code></pre>
+<p>So back to my earlier statement, many implementations I've seen have lots of Views and ViewModels, but not a Model in sight.  The first M (Model) gets neglected.</p>
 
-<p>Depending on the application, and the likelihood of a large list of errors, you may also need to extend this to include some fixed sizing of the Tooltip and a ScrollViewer.</p>
+<p>When you dig deeper there usually are Models, but they've been called ViewModels.  How does the code get to this point?  I think it's often that the pattern is well understood and the team get into the habit of just calling everything a ViewModel, then they start share something called a ViewModel (but is actually a Model) between Views, then they get into the habit of doing that, then they start sharing ViewModels that really is are ViewModels between Views, then the dragons...</p>
 
-<h2>Mobile XAML</h2>
-
-<p>In mobile apps you don't have the same options for user feedback, Tooltips don't exist in that world, but the errors are likely to still be useful to the user. I'm still looking for a good solution in the mobile space, so stay tuned. </p>
+<p>So please, take the time to think about the first M! </p>
 
 
     <div id="disqus_thread"></div>
@@ -145,14 +104,14 @@
             reload: true,
             config: function () {
                 //this.page.identifier = '';
-                this.page.url = 'http://blog.shannonlewis.me/2014/06/xaml-commands-and-user-feedback/';
+                this.page.url = 'http://blog.shannonlewis.me/2015/03/mvvm/';
                 //this.page.title = '';
             }
         });
     };
 
     var disqus_shortname = 'slewis';
-    var disqus_url = 'http://blog.shannonlewis.me/2014/06/xaml-commands-and-user-feedback/';
+    var disqus_url = 'http://blog.shannonlewis.me/2015/03/mvvm/';
 
     (function() {
         var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;

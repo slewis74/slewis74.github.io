@@ -8,7 +8,19 @@ published: Draft
 In case of massive XAML files, break here...
 ---end
 
-A while back I talked about XAML and Commands, and I mentioned UI decoupling using something like an EventAggregator.  In this post I want to talk about one of the common causes I've seen for Views and ViewModels becoming coupled and cluttered.
+A while back I talked about [XAML and Commands](/2014/06/xaml-commands/), and I mentioned UI decoupling using something like an EventAggregator.  In that post I was focusing on the separation of the command logic into Command objects and how that decouples the UI implementation.  In this post we'll expore some more decoupling ideas.
+
+#MVVM
+
+
+
+
+
+
+
+
+
+In this post I want to talk about one of the common causes I've seen for Views and ViewModels becoming coupled and cluttered.
 
 The short description of the issue is that composition is not well enough understood and the Views grow to be enormous and complex.  I liken it to writing an entire application in a single class file.
 
@@ -44,7 +56,7 @@ Dependency Properties are built in to the XAML framework.  They define propertie
 The downside to this approach is that for the binding to work the UI components need to be able to see each other, which given the refactoring we've been doing isn't always possible.  If the UI components are far enough removed in the visual tree they won't be directly visible to each other.
 
 ##Messaging
-This is the scenario where the EventAggregator comes into play.  Now at this point let's clarify that despite the name, it doesn't actually Aggregator Events.  What it does is brokers Events between a Publisher and a number of Subscribers.  I'm not exactly sure on the exact origins of the name, but it's been commonly used for the message brokers in a number of frameworks (Unity, Caliburn Micro) for a long time.
+This is the scenario where the EventAggregator comes into play.  Now at this point let's clarify that despite the name, it doesn't actually Aggregate Events.  What it does is broker Events between a Publisher and a number of Subscribers.  I'm not exactly sure on the exact origins of the name, but it's been commonly used for the message brokers in a number of frameworks (Unity, Caliburn Micro) for a long time.
 
 As part of several side projects I've worked on, I've also built an implementation of an event broker that I called PresentationBus.  The reasoning being that I think of the events and messaging in terms similar to how we use a Service Bus in Micro Service architecture, but in this scenario we're constrained to the "Presentation Layer".
 
