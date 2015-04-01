@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
-    <meta http-equiv="last-modified" content="2015-03-28T12:32:27.8015416+10:00" />
+    <meta http-equiv="last-modified" content="2015-04-01T12:46:21.2496420+10:00" />
     <meta name="keywords" content="MVVM,XAML" />
     <title>Shannon's Blog</title>
     <link rel="stylesheet" type="text/css" href="/stylesheets/bootstrap.min.css" />
@@ -80,7 +80,7 @@ Its responsibility is to hold the data and notify others when changes occur.  It
 
 <p>A View Model represents the visual state of the data, and encapsulates the visual behaviour around that data.  It may project the data stored in a model (e.g. FullName may project "Surname, FirstName"), but it's responsibility is to hold the transient, visual state of the data.  IsSelected, IsChecked, IsEnabled, SelectedItem are examples of the types of properties on a ViewModel, they are not persisted but are important to the visualisation of the data.</p>
 
-<p>A ViewModel <strong>type</strong> may be shared between Views, but there be dragons here.  Only do this if the visual behaviour required <strong>is identical</strong>.  If it isn't identical then you will be tempted into adding multiple personalities to the ViewModel, and violating the "Single Responsibility" principle. </p>
+<p>A ViewModel <strong>type</strong> may be shared between Views, but <a href="http://en.wikipedia.org/wiki/Here_be_dragons">here be dragons</a>.  Only do this if the visual behaviour required <strong>is identical</strong>.  If it isn't identical then you will be tempted into adding multiple personalities to the ViewModel, and violating the "Single Responsibility" principle. </p>
 
 <h1>What is a View?</h1>
 
@@ -92,9 +92,9 @@ Its responsibility is to hold the data and notify others when changes occur.  It
 
 <p>So back to my earlier statement, many implementations I've seen have lots of Views and ViewModels, but not a Model in sight.  The first M (Model) gets neglected.</p>
 
-<p>When you dig deeper there usually are Models, but they've been called ViewModels.  How does the code get to this point?  I think it's often that the pattern is well understood and the team get into the habit of just calling everything a ViewModel, then they start share something called a ViewModel (but is actually a Model) between Views, then they get into the habit of doing that, then they start sharing ViewModels that really is are ViewModels between Views, then the dragons...</p>
+<p>When you dig deeper there usually are Models, but they've been called ViewModels.  How does the code get to this point?  I think it's often that the pattern is not well understood and the team get into the habit of just calling everything a ViewModel, then they start sharing something called a ViewModel (but is actually a Model) between Views, then they get into the habit of doing that, then they start sharing ViewModels that really are ViewModels between Views, then the dragons...</p>
 
-<p>So please, take the time to think about the first M! </p>
+<p>So please, take the time to think about the first M, and avoid confusion by calling things what they actually are.</p>
 
 
     <div id="disqus_thread"></div>
