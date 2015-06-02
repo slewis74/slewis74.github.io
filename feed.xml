@@ -1,4 +1,31 @@
-<feed xmlns="http://www.w3.org/2005/Atom"><title type="text">Shannon's Blog</title><subtitle type="text">Shannon's Blog</subtitle><id>http://blog.shannonlewis.me/</id><updated>2015-04-01T16:08:04+10:00</updated><author><name>Shannon Lewis</name><uri>http://blog.shannonlewis.me</uri><email>slewis74@gmail.com</email></author><generator>Sandra.Snow Atom Generator</generator><link rel="alternate" href="http://blog.shannonlewis.me/feed.xml" /><link rel="self" type="text/html" title="Shannon's Blog" href="http://blog.shannonlewis.me/feed.xml" /><entry><id>http://blog.shannonlewis.me/2015/03/mvvm/</id><title type="text">Model-View-ViewModel</title><summary type="html">&lt;p&gt;Don't forget the first M!&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title type="text">Shannon's Blog</title><subtitle type="text">Shannon's Blog</subtitle><id>http://blog.shannonlewis.me/</id><updated>2015-06-02T22:28:12+10:00</updated><author><name>Shannon Lewis</name><uri>http://blog.shannonlewis.me</uri><email>slewis74@gmail.com</email></author><generator>Sandra.Snow Atom Generator</generator><link rel="alternate" href="http://blog.shannonlewis.me/feed.xml" /><link rel="self" type="text/html" title="Shannon's Blog" href="http://blog.shannonlewis.me/feed.xml" /><entry><id>http://blog.shannonlewis.me/2015/05/viewcomposition/</id><title type="text">Composing views</title><summary type="html">&lt;p&gt;In case of massive XAML files, break here...&lt;/p&gt;
+</summary><published>2015-05-24T14:00:00Z</published><updated>2015-05-24T14:00:00Z</updated><link rel="alternate" href="http://blog.shannonlewis.me/2015/05/viewcomposition/" /><content type="html">&lt;p&gt;A while back I talked about &lt;a href="http://blog.shannonlewis.me/2014/06/xaml-commands/"&gt;XAML and Commands&lt;/a&gt;, and I mentioned UI decoupling using something like an EventAggregator.  In that post I was focusing on the separation of the command logic into Command objects and how that decouples the UI implementation.  In this post we'll expore some more decoupling ideas.&lt;/p&gt;
+
+&lt;h1&gt;View Composition&lt;/h1&gt;
+
+&lt;p&gt;Something I commonly see in WPF and Xaml, where MVVM has been used, are massive ViewModels.  When you dig into these you'll usually find that there are in fact multiple view models that have all been jammed into the one class.  The tendency seems to come down to &lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;1 Page = 1 View = 1 ViewModel.
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;One of the things that initially seems nice about this arrangement is that we have easy access to everything we need.  There's lots of properties and command objects and all sorts of goodies within easy reach, just begging to be coupled together.  Where it leads though is an unhappy place.&lt;/p&gt;
+
+&lt;p&gt;Ok, so we're in an unhappy place, where do we go?  We start to decouple the code and separate out the pieces. Let's say we've got a view that has a search panel, a panel with a list of results and a panel to display the details of whichever item in the list is selected. Each of these 3 concerns should have it's own View (user control) and ViewModel, the page's View and ViewModel are then host to the other 3. &lt;/p&gt;
+
+&lt;p&gt;So this sounds good and we start pulling the code apart, let's start with the search panel. And with that we come to a screeching halt.  If the search code is in a separate ViewModel, how is it going to update the results list that is now in a different class?  We'll hit a similar thing when we split the list and the details for the selected item, how does the details panel know which item is selected? &lt;/p&gt;
+
+&lt;p&gt;What we're seeing here is the difference between a coupled UI and a composed UI. A composed UI, as the name should suggest, is built up of components that are independent.  They do not have direct knowledge of what other components are in use around them, but we need a way for them to interact with the other components.&lt;/p&gt;
+
+&lt;p&gt;I liken this to micro-service architecture, where you also have a number of services indirectly interacting with one another.  How do they achieve that interaction?  Commonly through a Service Bus of some kind, i.e. through messaging.  So maybe our ViewModels could interact through message to achieve a similar result?&lt;/p&gt;
+
+&lt;h1&gt;Messaging and the PresentationBus&lt;/h1&gt;
+
+&lt;p&gt;This is the scenario where the EventAggregator comes into play.  Now at this point let's clarify that despite the name, it doesn't actually Aggregate Events.  What it does is broker Events between a Publisher and a number of Subscribers.  I'm not sure on the exact origins of the name, but it's been commonly used for the message brokers in a number of frameworks (e.g. Unity, Caliburn Micro) for a very long time.&lt;/p&gt;
+
+&lt;p&gt;As part of several side projects I've been working on, I've also built an implementation of an event broker that I called &lt;strong&gt;&lt;a href="http://www.nuget.org/packages/Slew.PresentationBus/"&gt;PresentationBus&lt;/a&gt;&lt;/strong&gt; (i.e. a Service Bus for the "Presentation Layer").&lt;/p&gt;
+
+&lt;p&gt;In a future post I'll go through some more about PresentationBus and illustrate some more examples of its use.&lt;/p&gt;
+</content></entry><entry><id>http://blog.shannonlewis.me/2015/03/mvvm/</id><title type="text">Model-View-ViewModel</title><summary type="html">&lt;p&gt;Don't forget the first M!&lt;/p&gt;
 </summary><published>2015-03-26T14:00:00Z</published><updated>2015-03-26T14:00:00Z</updated><link rel="alternate" href="http://blog.shannonlewis.me/2015/03/mvvm/" /><content type="html">&lt;p&gt;As a consultant focused in the WPF and Mobile development spaces I've spent a lot of time in the world of MVVM.  I've seen lots of different frameworks and lots of different ideas around implementing MVVM.&lt;/p&gt;
 
 &lt;p&gt;One thing that I've seen frequently cause confusion is the first M.  To help explain that statement, here are the typical ways I try to describe MVVM to people.&lt;/p&gt;

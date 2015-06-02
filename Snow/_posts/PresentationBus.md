@@ -8,7 +8,7 @@ published: Draft
 Jump on the bus to decoupled UI code.
 ---end
 
-In my last post I talked about View Composition and introduced the PresentationBus as something that help us when building composable UIs in XAML.  In this post I'll use a couple of examples to illustrate how to make use a PresentationBus (or any other EventAggregator for that matter) in your applications.
+In an earlier post I talked about View Composition and introduced the PresentationBus as something that help us when building composable UIs in XAML.  In this post I'll use a couple of examples to illustrate how to make use a PresentationBus (or any other EventAggregator for that matter) in your applications.
 
 
 
