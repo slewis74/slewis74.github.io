@@ -2,10 +2,10 @@
 layout: post
 title: Orienteer
 categories: XAML, MVVM, Orienteer
-published: Draft
+published: true
 ---
 ---excerpt
-Navigating in MVVM, which way do I go?
+Navigating in MVVM, which way do you go?
 ---end
 
 Several years ago I set out into the world of mobile app development.  As a developer focused primarily in the Microsoft space, and having spent a good part of the last 8 years doing WPF development, Windows 8 and Windows Phone 8 apps seemed like a logical place to start.
@@ -15,15 +15,17 @@ Over the years I've used numerous frameworks and tools, some of which I've grown
 The MVC style navigation and the removal of the navigation logic and data retrieval from the ViewModels makes so much sense to me, and when I started off into the mobile XAML world I found I was missing my controllers.  So over the course of the last 2-3years, and several projects, I've been slowly putting together something very similar, but a bit smaller and more mobile focused.  Introducing the result...
 
 #Orienteer
-Orienteer is available as a nuget package, and the project page can be found over on GitHub.
+Orienteer is available as a [nuget package](https://www.nuget.org/packages/Orienteer/), and the [project page](https://github.com/slewis74/Orienteer) can be found over on GitHub.
 
 ##What's in the box?
 Let's have a look at some of the core components and features.
 
 ###Controllers and the Navigator
-The core to navigating is a Navigator.  Any of the commands that need to trigger a navigation simply needs to take a dependency on a Navigator, it provides the gateway to the controller actions.
+The core to navigating is a Navigator.  Any of the commands that need to trigger a navigation simply need to take a dependency on a Navigator, it provides the gateway to the controller actions.
 
 Controllers are controllers in the MVC, not the iOS sense, for those who've done iOS development.  An action can return a ViewModelResult, in order to navigate to the View (page) associated with that ViewModel.  An action can also return a DataActionResult, which only contains data (ViewModels can access these actions via the GetData methods on the Navigator).
+
+As a note, I haven't needed modals in the apps I've looked at so far, so no support for that yet but it's on the backlog.
 
 ###ViewModel first navigation
 As mentioned above, the controller actions can return a result identifying the ViewModel to navigate to, i.e. it uses ViewModel first navigation.  The View is located by naming convention, using a parallel hierarchy search from configured root namespaces for the Views and ViewModels.
@@ -60,6 +62,8 @@ To help get going with Orienteer there is are samples included with the source. 
 
 The samples currently all revolve around a simple app to display the music content on your device.  The Windows 8 sample that's coming will also include playing functionality, to help illustrate some more decoupling concepts and some more advanced uses of the **[PresentationBus](http://www.nuget.org/packages/Slew.PresentationBus/)**.
 
+The samples also use Autofac, being my container of choice, with illustration of how to configure it for use with Orienteer.  Orienteer itself has no direct dependency to Autofac though, so feel free to use your container of choice.
+
 ###Windows Phone
 If you run the Windows Phone app on the emulator you'll want to connect some music files to the emulator.  I'd recommend using the Windows Phone 8.1 Emulator.  In the SD Card configuration select a folder that contains some Music files and select Insert Card.  You'll get a prompt in the emulator at that point, select Yes and you're away.
 
@@ -73,4 +77,7 @@ Again, on the emulator you'll want some music files.  If you open an Android con
 This will copy the files onto the emulator.
 
 ###iOS
-On the iOS, I haven't found a way to get music onto the emulator as yet.  The MusicProvider class for iOS currently returns some static data by default.  If you're running on a device then commenting out the static data code at the top of the ScanMusicLibraryFolder method.  
+On iOS, I haven't found a way to get music onto the emulator as yet.  The MusicProvider class for iOS currently returns some static data by default.  If you're running on a device then commenting out the static data code at the top of the ScanMusicLibraryFolder method.
+
+#Stay Tuned
+While the samples should hopefully help those who are eager to give Orienteer a go, I'm also aiming to do some more detailed posts on setup and usage soon.  
