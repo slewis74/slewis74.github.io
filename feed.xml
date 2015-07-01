@@ -1,4 +1,89 @@
-<feed xmlns="http://www.w3.org/2005/Atom"><title type="text">Shannon's Blog</title><subtitle type="text">Shannon's Blog</subtitle><id>http://blog.shannonlewis.me/</id><updated>2015-06-28T15:07:58+10:00</updated><author><name>Shannon Lewis</name><uri>http://blog.shannonlewis.me</uri><email>slewis74@gmail.com</email></author><generator>Sandra.Snow Atom Generator</generator><link rel="alternate" href="http://blog.shannonlewis.me/feed.xml" /><link rel="self" type="text/html" title="Shannon's Blog" href="http://blog.shannonlewis.me/feed.xml" /><entry><id>http://blog.shannonlewis.me/2015/06/orienteer/</id><title type="text">Orienteer</title><summary type="html">&lt;p&gt;Navigating in MVVM, which way do you go?&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title type="text">Shannon's Blog</title><subtitle type="text">Shannon's Blog</subtitle><id>http://blog.shannonlewis.me/</id><updated>2015-07-01T22:20:49+10:00</updated><author><name>Shannon Lewis</name><uri>http://blog.shannonlewis.me</uri><email>slewis74@gmail.com</email></author><generator>Sandra.Snow Atom Generator</generator><link rel="alternate" href="http://blog.shannonlewis.me/feed.xml" /><link rel="self" type="text/html" title="Shannon's Blog" href="http://blog.shannonlewis.me/feed.xml" /><entry><id>http://blog.shannonlewis.me/2015/07/orienteer-winphone/</id><title type="text">Orienteer and Windows Phone</title><summary type="html">&lt;p&gt;Orienteer now has support for Windows Phone 8 Silverlight apps!&lt;/p&gt;
+</summary><published>2015-06-30T14:00:00Z</published><updated>2015-06-30T14:00:00Z</updated><link rel="alternate" href="http://blog.shannonlewis.me/2015/07/orienteer-winphone/" /><content type="html">&lt;p&gt;Orienteer now has support for Windows Phone 8 Silverlight apps, and there's a &lt;a href="https://github.com/slewis74/Orienteer/tree/master/Samples/WinPhoneSample"&gt;sample app&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;The bulk of the setup code is very similar to that of the Xamarin Forms applications, with the exception of the PhoneApplicationFrameAdapter.&lt;/p&gt;
+
+&lt;h2&gt;PhoneApplicationFrameAdapter&lt;/h2&gt;
+
+&lt;p&gt;To hook Orienteer into Xamarin Forms we use a custom NavigationPage, to hook in to Windows Phone we use an adapter that attaches to the PhoneApplicationFrame.  The code below shows how to initialize the adapter during the application initialization.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;private IContainer _container;
+
+private void InitializePhoneApplication()
+{
+    if (phoneApplicationInitialized)
+        return;
+
+    LetThereBeIoC();
+
+    RootFrame = new PhoneApplicationFrame();
+    RootFrame.Navigated += CompleteInitializePhoneApplication;
+    RootFrame.NavigationFailed += RootFrame_NavigationFailed;
+    RootFrame.Navigated += CheckForResetNavigation;
+
+    InitFrameAdapter();
+
+    phoneApplicationInitialized = true;
+}
+
+private async Task InitFrameAdapter()
+{
+    var adapter = _container.Resolve&amp;lt;IPhoneApplicationFrameAdapter&amp;gt;();
+    adapter.PhoneApplicationFrame = RootFrame;
+    await adapter.DoStartup();
+}
+
+private void LetThereBeIoC()
+{
+    var builder = new ContainerBuilder();
+    builder.RegisterAssemblyModules(new[]
+    {
+        typeof(App).Assembly
+    });
+
+    _container = builder.Build();
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3&gt;Autofac registration&lt;/h3&gt;
+
+&lt;p&gt;To register the adapter in Autofac you will need a registration similar to the following&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;builder
+    .RegisterType&amp;lt;PhoneApplicationFrameAdapter&amp;gt;()
+    .As&amp;lt;IPhoneApplicationFrameAdapter&amp;gt;()
+    .WithParameter("viewRootNamespace", ViewRootNamespace)
+    .WithParameter("baseFeatureFolder", "Features")
+    .SingleInstance();
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Where:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;ViewRootNamespace is the same namespace used by the ViewLocator&lt;/li&gt;
+&lt;li&gt;"Features" is the ViewRootNamespace's folder, relative to the root level of the application.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;These values are used by the adapter to determine the correct XAML file to navigate to, when a ViewModelNavigationRequest is published.&lt;/p&gt;
+
+&lt;h3&gt;Manifest Navigation Page&lt;/h3&gt;
+
+&lt;p&gt;In the Windows Phone manifest there is a value for the default page to navigate to.  Orienteer doesn't use this value, it uses the NavigationStack's defaultRoute to determine the default route, and therefore page, to display.  It does however have to understand what the value is.&lt;/p&gt;
+
+&lt;p&gt;The reason behind this is that the PhoneApplicationFrame itself will navigate to the specified page upon startup and cause issues with Orienteer's stack monitoring.&lt;/p&gt;
+
+&lt;p&gt;You have a couple of options around this value:&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;Set the value to Orienteer, per the WinPhoneSample 
+&lt;img src="http://blog.shannonlewis.me/images/wp8-manifest-navpage.png" width="360px" height="262px"/&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Set the value to be blank, and ignore the red text that appears in Visual Studio's manifest editor.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Choose your own custom value. In this scenario you will also need to set assign the custom value to the ManifestNavigationPage property of the adapter, for example in the Autofac registration you'd include something like  &lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;.WithProperty("ManifestNavigationPage", "MyCustomValue")
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;/ol&gt;
+</content></entry><entry><id>http://blog.shannonlewis.me/2015/06/orienteer/</id><title type="text">Orienteer</title><summary type="html">&lt;p&gt;Navigating in MVVM, which way do you go?&lt;/p&gt;
 </summary><published>2015-06-14T14:00:00Z</published><updated>2015-06-14T14:00:00Z</updated><link rel="alternate" href="http://blog.shannonlewis.me/2015/06/orienteer/" /><content type="html">&lt;p&gt;Several years ago I set out into the world of mobile app development.  As a developer focused primarily in the Microsoft space, and having spent a good part of the last 8 years doing WPF development, Windows 8 and Windows Phone 8 apps seemed like a logical place to start.&lt;/p&gt;
 
 &lt;p&gt;Over the years I've used numerous frameworks and tools, some of which I've grown to love, and others not so much.  One that I am particularly fond of, which was written by a friend and ex-colleague, is the &lt;a href="https://code.google.com/p/magellan-framework/"&gt;Magellan navigation framework for WPF&lt;/a&gt;.&lt;/p&gt;

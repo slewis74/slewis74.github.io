@@ -1,0 +1,225 @@
+
+<!DOCTYPE html>
+<html dir="ltr" lang="en-US">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta http-equiv="last-modified" content="2015-07-01T22:20:46.9876576+10:00" />
+    <meta name="keywords" content="Orienteer,XAML" />
+    <title>Shannon's Blog</title>
+    <link rel="stylesheet" type="text/css" href="/stylesheets/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="/stylesheets/prettify.css" />
+    <link rel="stylesheet" type="text/css" href="/stylesheets/blog.css" />
+    <link rel="canonical" href="http://blog.shannonlewis.me/2015/07/orienteer-winphone/" />
+</head>
+<body>
+    <div class="blog-masthead">
+        <div class="container">
+            <nav class="navbar navbar-inverse navbar-fixed-top blog-nav" role="navigation">
+                <div class="container">
+                    <div class="navbar-header">
+						<a href="/" class="navbar-brand">Shannon Lewis</a>
+                    </div>
+                    <div id="navbar" class="navbar-collapse collapse">
+                        <ul class="nav navbar-nav">
+                            <li><a class="blog-nav-item" href="/">Home</a></li>
+                            <li><a class="blog-nav-item" href="/about">About</a></li>
+                            <li><a class="blog-nav-item" href="/category">Categories</a></li>
+                            <li><a class="blog-nav-item" href="/archive">Archive</a></li>
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Subscribe<span class="caret"></span></a>
+                                <ul class="dropdown-menu" role="menu">
+                                    <li><a class="blog-nav-item" href="/rss.xml">RSS</a></li>
+                                    <li><a href="/feed.xml">Atom</a></li>
+                                </ul>
+
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </div>
+    
+    <div class="container">
+        <div class="blog-header">
+            <h1 class="blog-title">Shannon's Blog</h1>
+            <p class="lead blog-description">.NET dev, going mobile</p>
+        </div>        
+        <div class="row">
+            
+            
+
+<div id="blog-post" class="col-sm-8">
+    <h1 class="blog-post-title">Orienteer and Windows Phone</h1>
+    <p class="blog-post-meta">
+        01 Jul 2015
+    </p>
+
+    
+
+    <p>Orienteer now has support for Windows Phone 8 Silverlight apps, and there's a <a href="https://github.com/slewis74/Orienteer/tree/master/Samples/WinPhoneSample">sample app</a>.</p>
+
+<p>The bulk of the setup code is very similar to that of the Xamarin Forms applications, with the exception of the PhoneApplicationFrameAdapter.</p>
+
+<h2>PhoneApplicationFrameAdapter</h2>
+
+<p>To hook Orienteer into Xamarin Forms we use a custom NavigationPage, to hook in to Windows Phone we use an adapter that attaches to the PhoneApplicationFrame.  The code below shows how to initialize the adapter during the application initialization.</p>
+
+<pre><code>private IContainer _container;
+
+private void InitializePhoneApplication()
+{
+    if (phoneApplicationInitialized)
+        return;
+
+    LetThereBeIoC();
+
+    RootFrame = new PhoneApplicationFrame();
+    RootFrame.Navigated += CompleteInitializePhoneApplication;
+    RootFrame.NavigationFailed += RootFrame_NavigationFailed;
+    RootFrame.Navigated += CheckForResetNavigation;
+
+    InitFrameAdapter();
+
+    phoneApplicationInitialized = true;
+}
+
+private async Task InitFrameAdapter()
+{
+    var adapter = _container.Resolve&lt;IPhoneApplicationFrameAdapter&gt;();
+    adapter.PhoneApplicationFrame = RootFrame;
+    await adapter.DoStartup();
+}
+
+private void LetThereBeIoC()
+{
+    var builder = new ContainerBuilder();
+    builder.RegisterAssemblyModules(new[]
+    {
+        typeof(App).Assembly
+    });
+
+    _container = builder.Build();
+}
+</code></pre>
+
+<h3>Autofac registration</h3>
+
+<p>To register the adapter in Autofac you will need a registration similar to the following</p>
+
+<pre><code>builder
+    .RegisterType&lt;PhoneApplicationFrameAdapter&gt;()
+    .As&lt;IPhoneApplicationFrameAdapter&gt;()
+    .WithParameter("viewRootNamespace", ViewRootNamespace)
+    .WithParameter("baseFeatureFolder", "Features")
+    .SingleInstance();
+</code></pre>
+
+<p>Where:</p>
+
+<ul>
+<li>ViewRootNamespace is the same namespace used by the ViewLocator</li>
+<li>"Features" is the ViewRootNamespace's folder, relative to the root level of the application.</li>
+</ul>
+
+<p>These values are used by the adapter to determine the correct XAML file to navigate to, when a ViewModelNavigationRequest is published.</p>
+
+<h3>Manifest Navigation Page</h3>
+
+<p>In the Windows Phone manifest there is a value for the default page to navigate to.  Orienteer doesn't use this value, it uses the NavigationStack's defaultRoute to determine the default route, and therefore page, to display.  It does however have to understand what the value is.</p>
+
+<p>The reason behind this is that the PhoneApplicationFrame itself will navigate to the specified page upon startup and cause issues with Orienteer's stack monitoring.</p>
+
+<p>You have a couple of options around this value:</p>
+
+<ol>
+<li><p>Set the value to Orienteer, per the WinPhoneSample 
+<img src="/images/wp8-manifest-navpage.png" width="360px" height="262px"/></p></li>
+<li><p>Set the value to be blank, and ignore the red text that appears in Visual Studio's manifest editor.</p></li>
+<li><p>Choose your own custom value. In this scenario you will also need to set assign the custom value to the ManifestNavigationPage property of the adapter, for example in the Autofac registration you'd include something like  </p>
+
+<pre><code>.WithProperty("ManifestNavigationPage", "MyCustomValue")
+</code></pre></li>
+</ol>
+
+
+    <div id="disqus_thread"></div>
+<script>
+    var reset_disqus = function(){
+        DISQUS.reset({
+            reload: true,
+            config: function () {
+                //this.page.identifier = '';
+                this.page.url = 'http://blog.shannonlewis.me/2015/07/orienteer-winphone/';
+                //this.page.title = '';
+            }
+        });
+    };
+
+    var disqus_shortname = 'slewis';
+    var disqus_url = 'http://blog.shannonlewis.me/2015/07/orienteer-winphone/';
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+
+    window.addEventListener('orientationchange', reset_disqus);
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+    <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-51ca97356d8c1454"></script>
+
+</div>
+            
+            <div class="col-sm-3 col-sm-offset-1 blog-sidebar">
+                <div class="sidebar-module sidebar-module-inset">
+					<h4>About Shannon</h4>
+					<img src="/images/Shannon-Thumbnail.jpg" />
+                    <p><strong>Shannon Lewis</strong> is a Consultant with Readify, an avid .NET/Mobile Developer, Runner, Cyclist and father of 2.</p>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+    
+    <footer id="colophon" class="site-footer blog-footer" role="contentinfo">
+        <div class="site-info">
+            Powered by <a href="https://github.com/Sandra/Sandra.Snow" rel="generator">Sandra.Snow</a>.
+        </div>
+        <!-- .site-info -->
+    </footer>
+
+    <!-- #page .hfeed .site -->
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src='/javascripts/prettify.js' type='text/javascript'></script>
+    <script src='/javascripts/bootstrap.min.js' type='text/javascript'></script>
+    <script type='text/javascript'>
+        $(function () {
+            $("pre code").parent().each(function () {
+                if (!$(this).hasClass("prettyprint")) {
+                    $(this).addClass("prettyprint");
+                    a = true
+                }
+            });
+
+            prettyPrint();
+        });
+    </script>
+    <script>
+        (function (i, s, o, g, r, a, m) {
+            i['GoogleAnalyticsObject'] = r; i[r] = i[r] || function () {
+                (i[r].q = i[r].q || []).push(arguments)
+            }, i[r].l = 1 * new Date(); a = s.createElement(o),
+                m = s.getElementsByTagName(o)[0]; a.async = 1; a.src = g; m.parentNode.insertBefore(a, m)
+        })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
+
+        ga('create', 'UA-51930463-1', 'shannonlewis.me');
+        ga('send', 'pageview');
+
+    </script>
+</body>
+</html>
