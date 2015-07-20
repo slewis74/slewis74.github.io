@@ -1,7 +1,7 @@
 @inherits Nancy.ViewEngines.Razor.NancyRazorViewBase<Snow.ViewModels.ContentViewModel>
 @using System.Collections.Generic
 @{
-  Layout = "default.cshtml";
+  Layout = "defaultWithCategories.cshtml";
 }
 <div class="col-sm-8 blog-main">
     @foreach(var postPaged in Model.Drafts) {

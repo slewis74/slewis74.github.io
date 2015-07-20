@@ -1,16 +1,20 @@
-
+﻿@inherits Nancy.ViewEngines.Razor.NancyRazorViewBase<Snow.ViewModels.BaseViewModel>
+@using System.Collections.Generic
+@{
+    var keywords = String.Join(",", Model.Keywords);
+}
 <!DOCTYPE html>
 <html dir="ltr" lang="en-US">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
-    <meta http-equiv="last-modified" content="2015-07-21T08:01:49.2762093+10:00" />
-    <meta name="keywords" content="Android,Commands,MVVM,Orienteer,Parallels,PresentationBus,Xamarin,XAML" />
+    <meta http-equiv="last-modified" content="@Model.GeneratedDate" />
+    <meta name="keywords" content="@keywords" />
     <title>Shannon's Blog</title>
     <link rel="stylesheet" type="text/css" href="/stylesheets/bootstrap.min.css" />
     <link rel="stylesheet" type="text/css" href="/stylesheets/prettify.css" />
     <link rel="stylesheet" type="text/css" href="/stylesheets/blog.css" />
-    <link rel="canonical" href="http://blog.shannonlewis.me/archive/" />
+    @Html.CanonicalUrl()
 </head>
 <body>
     <div class="blog-masthead">
@@ -48,47 +52,7 @@
         </div>        
         <div class="row">
             
-            
-
-<div class="col-sm-8">
-	<h2>Archives</h2>
-  
-    <a name="20157"></a>
-    <h2>July, 2015</h2>
-    <ul class="archive fancy-container darkishred">
-      <li><a href="/2015/07/orienteer-origins/">Orienteer's Origins</a> (<span>21 Jul 2015</span>)</li>
-      <li><a href="/2015/07/orienteer-winphone/">Orienteer and Windows Phone</a> (<span>01 Jul 2015</span>)</li>
-
-    </ul>
-    <a name="20156"></a>
-    <h2>June, 2015</h2>
-    <ul class="archive fancy-container darkishred">
-      <li><a href="/2015/06/orienteer/">Orienteer</a> (<span>15 Jun 2015</span>)</li>
-
-    </ul>
-    <a name="20155"></a>
-    <h2>May, 2015</h2>
-    <ul class="archive fancy-container darkishred">
-      <li><a href="/2015/05/viewcomposition/">Composing views</a> (<span>25 May 2015</span>)</li>
-
-    </ul>
-    <a name="20153"></a>
-    <h2>March, 2015</h2>
-    <ul class="archive fancy-container darkishred">
-      <li><a href="/2015/03/mvvm/">Model-View-ViewModel</a> (<span>27 Mar 2015</span>)</li>
-
-    </ul>
-    <a name="20146"></a>
-    <h2>June, 2014</h2>
-    <ul class="archive fancy-container darkishred">
-      <li><a href="/2014/06/xaml-commands-and-user-feedback/">Commands not executing, but why?</a> (<span>12 Jun 2014</span>)</li>
-      <li><a href="/2014/06/xamarin-android-parallels/">Xamarin, Android and Parallels</a> (<span>11 Jun 2014</span>)</li>
-      <li><a href="/2014/06/xaml-commands/">XAML and Commands</a> (<span>09 Jun 2014</span>)</li>
-
-    </ul>
-  
-</div>
-
+            @RenderBody()
             
             <div class="col-sm-3 col-sm-offset-1 blog-sidebar">
                 <div class="sidebar-module sidebar-module-inset">
@@ -101,14 +65,9 @@
             <div class="col-sm-3 col-sm-offset-1 blog-sidebar">
                 <div class="sidebar-module sidebar-module-inset">
 					<h4>Categories</h4>
-						<li><a href="/category/android" title="Android">Android</a></li>
-						<li><a href="/category/commands" title="Commands">Commands</a></li>
-						<li><a href="/category/mvvm" title="MVVM">MVVM</a></li>
-						<li><a href="/category/orienteer" title="Orienteer">Orienteer</a></li>
-						<li><a href="/category/parallels" title="Parallels">Parallels</a></li>
-						<li><a href="/category/presentationbus" title="PresentationBus">PresentationBus</a></li>
-						<li><a href="/category/xamarin" title="Xamarin">Xamarin</a></li>
-						<li><a href="/category/xaml" title="XAML">XAML</a></li>
+					@foreach(var category in Model.AllCategories){
+						<li><a href="/category/@category.Url" title="@category.Name">@category.Name</a></li>
+					}
                 </div>
             </div>
             
