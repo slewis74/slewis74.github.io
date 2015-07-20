@@ -1,4 +1,66 @@
-<feed xmlns="http://www.w3.org/2005/Atom"><title type="text">Shannon's Blog</title><subtitle type="text">Shannon's Blog</subtitle><id>http://blog.shannonlewis.me/</id><updated>2015-07-01T22:20:49+10:00</updated><author><name>Shannon Lewis</name><uri>http://blog.shannonlewis.me</uri><email>slewis74@gmail.com</email></author><generator>Sandra.Snow Atom Generator</generator><link rel="alternate" href="http://blog.shannonlewis.me/feed.xml" /><link rel="self" type="text/html" title="Shannon's Blog" href="http://blog.shannonlewis.me/feed.xml" /><entry><id>http://blog.shannonlewis.me/2015/07/orienteer-winphone/</id><title type="text">Orienteer and Windows Phone</title><summary type="html">&lt;p&gt;Orienteer now has support for Windows Phone 8 Silverlight apps!&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title type="text">Shannon's Blog</title><subtitle type="text">Shannon's Blog</subtitle><id>http://blog.shannonlewis.me/</id><updated>2015-07-21T07:47:40+10:00</updated><author><name>Shannon Lewis</name><uri>http://blog.shannonlewis.me</uri><email>slewis74@gmail.com</email></author><generator>Sandra.Snow Atom Generator</generator><link rel="alternate" href="http://blog.shannonlewis.me/feed.xml" /><link rel="self" type="text/html" title="Shannon's Blog" href="http://blog.shannonlewis.me/feed.xml" /><entry><id>http://blog.shannonlewis.me/2015/07/orienteer-origins/</id><title type="text">Orienteer's Origins</title><summary type="html">&lt;p&gt;I quick look back at my Orienteer journey.&lt;/p&gt;
+</summary><published>2015-07-20T14:00:00Z</published><updated>2015-07-20T14:00:00Z</updated><link rel="alternate" href="http://blog.shannonlewis.me/2015/07/orienteer-origins/" /><content type="html">&lt;p&gt;In working through finally publishing Orienteer recently I spent some time looking back over the code, how it came to be and how it had evolved over the last few years.  It was an interesting journey, one I've really enjoyed and one I've learned a lot from.  Here are some of the highlights.&lt;/p&gt;
+
+&lt;h1&gt;Phase 1 - Windows 8 and getting mobile&lt;/h1&gt;
+
+&lt;p&gt;When Windows 8 beta arrived I picked up the SDKs and samples and started learning.  Having a WPF and C# background I went down the C#/XAML path, rather than WinJS.&lt;/p&gt;
+
+&lt;p&gt;I dug around in a number of the samples and went looking for something I could build.  Not because I really wanted to publish an app, what I was looking for was something I could use as a learning tool.  A learning tool not just for me, but something I could use to illustrate concepts and features to others.&lt;/p&gt;
+
+&lt;p&gt;What I wanted was something (a domain) people could understand quickly and easily but still allow me to incorporate as many of the features Windows 8 had to offer.&lt;/p&gt;
+
+&lt;p&gt;Like many others I know, I like to listen to music while I'm working.  So one day I started up the Music app that came with Windows 8 and found it a bit frustrating to use.  If there was a way to do a playlist, I couldn't find it (remember this was in the days of the Beta, the app is a bit different now).&lt;/p&gt;
+
+&lt;p&gt;After a short time messing around with it I decided this was the type of app I'd been looking for.  It ticked all of the following boxes for things I wanted to learn more about:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Reading/writing files&lt;/li&gt;
+&lt;li&gt;Rendering grouped lists, with semantic zoom&lt;/li&gt;
+&lt;li&gt;Touch interactions/manipulations&lt;/li&gt;
+&lt;li&gt;Tiles and pinning&lt;/li&gt;
+&lt;li&gt;Settings&lt;/li&gt;
+&lt;li&gt;Background execution&lt;/li&gt;
+&lt;li&gt;Search &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h1&gt;Phase 2 - Grooving along&lt;/h1&gt;
+
+&lt;p&gt;So with great enthusiasm I set off building my imaginatively named Jukebox application, and in not too long had the core features roughly working and I could list and play the music in my music library.  After a few months of tinkering in my spare time I had working examples of all of the things on my list.&lt;/p&gt;
+
+&lt;h1&gt;Phase 3 - First an app, then a framework&lt;/h1&gt;
+
+&lt;p&gt;This was the point at which Orienteer was born.  Throughout the development of the app I had built and used controller based navigation, because that's what I liked from my WPF days and time spent with the Magellan Navigation Framework.  In order to be able to reuse this code I started refactoring it out, dare I say "into a framework".&lt;/p&gt;
+
+&lt;p&gt;As a quick aside, Orienteer had a different name at that stage.  I originally called it Slab, and it was originally going to contain far more than it does today.  For example, it originally contained the PresentationBus, before I pulled that out and made it into its own library.&lt;/p&gt;
+
+&lt;h1&gt;Phase 4 - "Why not have both?"&lt;/h1&gt;
+
+&lt;p&gt;During the evolution of Orienteer I also started doing mobile development for Windows Phone 8, and iOS and Android, using Xamarin and Xamarin Forms.  So the question I then had was "Do I stick with Windows 8 (tablet) or do I go mobile?".  Given that Windows 8, Windows Phone 8 and Xamarin Forms are all XAML based, it turned out to be a case of "Why not have both?".&lt;/p&gt;
+
+&lt;h1&gt;Windows 8 Jukebox&lt;/h1&gt;
+
+&lt;p&gt;I've recently opened up the source code for the Jukebox app, you can find it &lt;a href="https://github.com/slewis74/Jukebox"&gt;on GitHub&lt;/a&gt;.  In a future post I'll go through each of the feature bullets points from above and talk about implementation specifics.&lt;/p&gt;
+
+&lt;h1&gt;Reflections&lt;/h1&gt;
+
+&lt;p&gt;So did I get what I wanted out of my journey with Orienteer?  Yes, absolutely.&lt;/p&gt;
+
+&lt;p&gt;I learned a lot about Windows 8, mobile development in general and the satisfaction of publishing something of your own.&lt;/p&gt;
+
+&lt;p&gt;A couple of things that stand out.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Publish early!&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;The core code for Orienteer was "almost ready" for a long time, but I was hesitant about releasing it. I think this was partly due to the origins in Windows 8.  With the lacklustre uptake of Windows 8 I started questioning whether Orienteer would be viable.  The inclusion of the other mobile platforms put those doubts to rest, but the delay cost me time in getting feedback and input from others.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Do what you enjoy&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;Yes, it sounds very cliche, but building Orienteer (and even the sample apps for that matter) has been something I've really enjoyed. Being the Product Owner is also a great learning experience.&lt;/p&gt;
+
+&lt;h1&gt;Looking forward...&lt;/h1&gt;
+
+&lt;p&gt;To Windows 10!&lt;/p&gt;
+</content></entry><entry><id>http://blog.shannonlewis.me/2015/07/orienteer-winphone/</id><title type="text">Orienteer and Windows Phone</title><summary type="html">&lt;p&gt;Orienteer now has support for Windows Phone 8 Silverlight apps!&lt;/p&gt;
 </summary><published>2015-06-30T14:00:00Z</published><updated>2015-06-30T14:00:00Z</updated><link rel="alternate" href="http://blog.shannonlewis.me/2015/07/orienteer-winphone/" /><content type="html">&lt;p&gt;Orienteer now has support for Windows Phone 8 Silverlight apps, and there's a &lt;a href="https://github.com/slewis74/Orienteer/tree/master/Samples/WinPhoneSample"&gt;sample app&lt;/a&gt;.&lt;/p&gt;
 
 &lt;p&gt;The bulk of the setup code is very similar to that of the Xamarin Forms applications, with the exception of the PhoneApplicationFrameAdapter.&lt;/p&gt;
