@@ -4,6 +4,7 @@
 
 body {
   font-family: "Helvetica Neue", Georgia, "Times New Roman", Times, serif;
+  font-size: 18px;
   color: #555;
 }
 
@@ -19,6 +20,14 @@ h6, .h6 {
   color: #333;
 }
 
+h2, .h2 {
+	margin-top: 20px;
+}
+
+pre.prettyprint {
+	margin-top: 20px;
+	margin-bottom: 20px;
+}
 
 /*
  * Override Bootstrap's default container.
@@ -133,7 +142,7 @@ h6, .h6 {
 .sidebar-module-inset > img {
 	width: 90px;
 	float: left;
-	margin-right: 5px;
+	margin-right: 10px;
 	margin-bottom: 5px;
 }
 

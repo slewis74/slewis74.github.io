@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
-    <meta http-equiv="last-modified" content="2015-07-21T08:01:49.2762093+10:00" />
+    <meta http-equiv="last-modified" content="2015-10-26T20:46:54.8500883+10:00" />
     <meta name="keywords" content="PresentationBus,XAML" />
     <title>Shannon's Blog</title>
     <link rel="stylesheet" type="text/css" href="/stylesheets/bootstrap.min.css" />
@@ -60,7 +60,7 @@
 
     <p>A while back I talked about <a href="/2014/06/xaml-commands/">XAML and Commands</a>, and I mentioned UI decoupling using something like an EventAggregator.  In that post I was focusing on the separation of the command logic into Command objects and how that decouples the UI implementation.  In this post we'll expore some more decoupling ideas.</p>
 
-<h1>View Composition</h1>
+<h2>View Composition</h2>
 
 <p>Something I commonly see in WPF and Xaml, where MVVM has been used, are massive ViewModels.  When you dig into these you'll usually find that there are in fact multiple view models that have all been jammed into the one class.  The tendency seems to come down to </p>
 
@@ -77,7 +77,7 @@
 
 <p>I liken this to micro-service architecture, where you also have a number of services indirectly interacting with one another.  How do they achieve that interaction?  Commonly through a Service Bus of some kind, i.e. through messaging.  So maybe our ViewModels could interact through message to achieve a similar result?</p>
 
-<h1>Messaging and the PresentationBus</h1>
+<h2>Messaging and the PresentationBus</h2>
 
 <p>This is the scenario where the EventAggregator comes into play.  Now at this point let's clarify that despite the name, it doesn't actually Aggregate Events.  What it does is broker Events between a Publisher and a number of Subscribers.  I'm not sure on the exact origins of the name, but it's been commonly used for the message brokers in a number of frameworks (e.g. Unity, Caliburn Micro) for a very long time.</p>
 

@@ -10,7 +10,7 @@ I quick look back at my Orienteer journey.
 
 In working through finally publishing Orienteer recently I spent some time looking back over the code, how it came to be and how it had evolved over the last few years.  It was an interesting journey, one I've really enjoyed and one I've learned a lot from.  Here are some of the highlights.
 
-#Phase 1 - Windows 8 and getting mobile
+##Phase 1 - Windows 8 and getting mobile
 
 When Windows 8 beta arrived I picked up the SDKs and samples and started learning.  Having a WPF and C# background I went down the C#/XAML path, rather than WinJS.
 
@@ -30,24 +30,24 @@ After a short time messing around with it I decided this was the type of app I'd
 - Background execution
 - Search 
 
-#Phase 2 - Grooving along
+##Phase 2 - Grooving along
 
 So with great enthusiasm I set off building my imaginatively named Jukebox application, and in not too long had the core features roughly working and I could list and play the music in my music library.  After a few months of tinkering in my spare time I had working examples of all of the things on my list.
 
-#Phase 3 - First an app, then a framework
+##Phase 3 - First an app, then a framework
 
 This was the point at which Orienteer was born.  Throughout the development of the app I had built and used controller based navigation, because that's what I liked from my WPF days and time spent with the Magellan Navigation Framework.  In order to be able to reuse this code I started refactoring it out, dare I say "into a framework".
 
 As a quick aside, Orienteer had a different name at that stage.  I originally called it Slab, and it was originally going to contain far more than it does today.  For example, it originally contained the PresentationBus, before I pulled that out and made it into its own library.
 
-#Phase 4 - "Why not have both?"
+##Phase 4 - "Why not have both?"
 
 During the evolution of Orienteer I also started doing mobile development for Windows Phone 8, and iOS and Android, using Xamarin and Xamarin Forms.  So the question I then had was "Do I stick with Windows 8 (tablet) or do I go mobile?".  Given that Windows 8, Windows Phone 8 and Xamarin Forms are all XAML based, it turned out to be a case of "Why not have both?".
 
-# Windows 8 Jukebox
+## Windows 8 Jukebox
 I've recently opened up the source code for the Jukebox app, you can find it [on GitHub](https://github.com/slewis74/Jukebox).  In a future post I'll go through each of the feature bullets points from above and talk about implementation specifics.
 
-#Reflections
+##Reflections
 So did I get what I wanted out of my journey with Orienteer?  Yes, absolutely.
 
 I learned a lot about Windows 8, mobile development in general and the satisfaction of publishing something of your own.
@@ -62,6 +62,6 @@ The core code for Orienteer was "almost ready" for a long time, but I was hesita
 
 Yes, it sounds very cliche, but building Orienteer (and even the sample apps for that matter) has been something I've really enjoyed. Being the Product Owner is also a great learning experience.
 
-#Looking forward...
+##Looking forward...
 
 To Windows 10!

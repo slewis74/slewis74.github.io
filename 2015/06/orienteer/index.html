@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
-    <meta http-equiv="last-modified" content="2015-07-21T08:01:49.2762093+10:00" />
+    <meta http-equiv="last-modified" content="2015-10-26T20:46:54.8500883+10:00" />
     <meta name="keywords" content="MVVM,Orienteer,XAML" />
     <title>Shannon's Blog</title>
     <link rel="stylesheet" type="text/css" href="/stylesheets/bootstrap.min.css" />
@@ -64,15 +64,15 @@
 
 <p>The MVC style navigation and the removal of the navigation logic and data retrieval from the ViewModels makes so much sense to me, and when I started off into the mobile XAML world I found I was missing my controllers.  So over the course of the last 2-3years, and several projects, I've been slowly putting together something very similar, but a bit smaller and more mobile focused.  Introducing the result...</p>
 
-<h1>Orienteer</h1>
+<h2>Orienteer</h2>
 
 <p>Orienteer is available as a <a href="https://www.nuget.org/packages/Orienteer/">nuget package</a>, and the <a href="https://github.com/slewis74/Orienteer">project page</a> can be found over on GitHub.</p>
 
-<h2>What's in the box?</h2>
+<h3>What's in the box?</h3>
 
 <p>Let's have a look at some of the core components and features.</p>
 
-<h3>Controllers and the Navigator</h3>
+<h4>Controllers and the Navigator</h4>
 
 <p>The core to navigating is a Navigator.  Any of the commands that need to trigger a navigation simply need to take a dependency on a Navigator, it provides the gateway to the controller actions.</p>
 
@@ -80,13 +80,13 @@
 
 <p>As a note, I haven't needed modals in the apps I've looked at so far, so no support for that yet but it's on the backlog.</p>
 
-<h3>ViewModel first navigation</h3>
+<h4>ViewModel first navigation</h4>
 
 <p>As mentioned above, the controller actions can return a result identifying the ViewModel to navigate to, i.e. it uses ViewModel first navigation.  The View is located by naming convention, using a parallel hierarchy search from configured root namespaces for the Views and ViewModels.</p>
 
 <p>So the Views and ViewModels may reside in the same folder, in which case the root namespaces match, or they may reside below separate root level folders.  As an example of the latter, you might have ViewModels/Feature1/SomeViewModel.cs and it corresponding view might be Views/Feature1/SomeView.xaml   </p>
 
-<h3>Routing</h3>
+<h4>Routing</h4>
 
 <p>Orienteer also supports routing similar to MVC.  For example, we could have a route that looks like the following</p>
 
@@ -99,25 +99,25 @@
 
 <p>Second, on Windows Phone and Windows 8 it's used for deep linking from pinned tiles.</p>
 
-<h3>Async support</h3>
+<h4>Async support</h4>
 
 <p>The Navigator and Controller actions have full support for async/await. So you can NavigateAsync to a Controller action that is awaiting data retrieval.</p>
 
-<h3>Automatic Dispatching</h3>
+<h4>Automatic Dispatching</h4>
 
 <p>The BindableBase and DispatchingObservableCollection both automatically dispatch all Changed events back onto the UI thread.  So if you have background data loads happening you never have to worry about dispatching.</p>
 
 <p>While we're on DispatchingObservableCollection, it also has support for LargeUpdates.  Once you start a Large update the CollectionChanged events are suppressed until you call complete, at which point a Reset is raised.  This is useful in scenarios where you know there'll be a large amount of items being added and you don't want the performance hit of a re-paint per Add.</p>
 
-<h3>NavigationFrame</h3>
+<h4>NavigationFrame</h4>
 
 <p>In Windows 8 the inbuilt navigation Frame has some interesting behaviour regarding the way it caches or recreates Views when you navigate Back.  To work around this Orienteer has it's own NavigationFrame for Windows 8.</p>
 
-<h3>Xamarin Forms Support</h3>
+<h4>Xamarin Forms Support</h4>
 
 <p>Being XAML based, the navigation concepts that Orienteer uses fit in quite well with Xamarin Forms, so it's supported out of the box.</p>
 
-<h2>Sample Code</h2>
+<h3>Sample Code</h3>
 
 <p>To help get going with Orienteer there is are samples included with the source.  At the time of writing this post the Xamarin Forms sample is complete.  Windows Phone and Windows 8 will be coming shortly.</p>
 
@@ -125,13 +125,13 @@
 
 <p>The samples also use Autofac, being my container of choice, with illustration of how to configure it for use with Orienteer.  Orienteer itself has no direct dependency to Autofac though, so feel free to use your container of choice.</p>
 
-<h3>Windows Phone</h3>
+<h4>Windows Phone</h4>
 
 <p>If you run the Windows Phone app on the emulator you'll want to connect some music files to the emulator.  I'd recommend using the Windows Phone 8.1 Emulator.  In the SD Card configuration select a folder that contains some Music files and select Insert Card.  You'll get a prompt in the emulator at that point, select Yes and you're away.</p>
 
 <p>Note that the Windows Phone emulator resets its state on each restart, you have to select to Insert Card each time you restart it.</p>
 
-<h3>Android</h3>
+<h4>Android</h4>
 
 <p>Again, on the emulator you'll want some music files.  If you open an Android console you can use  </p>
 
@@ -140,11 +140,11 @@
 
 <p>This will copy the files onto the emulator.</p>
 
-<h3>iOS</h3>
+<h4>iOS</h4>
 
 <p>On iOS, I haven't found a way to get music onto the emulator as yet.  The MusicProvider class for iOS currently returns some static data by default.  If you're running on a device then commenting out the static data code at the top of the ScanMusicLibraryFolder method.</p>
 
-<h1>Stay Tuned</h1>
+<h2>Stay Tuned</h2>
 
 <p>While the samples should hopefully help those who are eager to give Orienteer a go, I'm also aiming to do some more detailed posts on setup and usage soon.  </p>
 
