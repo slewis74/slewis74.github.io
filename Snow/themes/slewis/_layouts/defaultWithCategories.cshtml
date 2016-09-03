@@ -66,7 +66,18 @@
                 <div class="sidebar-module sidebar-module-inset">
 					<h4>Categories</h4>
 					@foreach(var category in Model.AllCategories){
-						<li><a href="/category/@category.Url" title="@category.Name">@category.Name</a></li>
+						var catClass = "cat";
+						if (category.Count == 1)
+							catClass += " cat1";
+						else if (category.Count <= 2)
+							catClass += " cat2";
+						else if (category.Count <= 3)
+							catClass += " cat3";
+						else if (category.Count <= 4)
+							catClass += " cat4";
+						else
+							catClass += " cat5";
+						<li class="@catClass"><a href="/category/@category.Url" title="@category.Name">@category.Name</a></li>
 					}
                 </div>
             </div>

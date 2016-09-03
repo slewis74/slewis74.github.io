@@ -158,7 +158,34 @@ pre.prettyprint {
   border-radius: 30px;
 }
 
+/*
+ * Categories
+ */
 
+.cat {
+	display: inline;
+} 
+
+.cat a {
+	color: #555;
+}
+
+.cat1 {
+	font-size:14px;
+}
+.cat2 {
+	font-size:16px;
+}
+.cat3 {
+	font-size:18px;
+}
+.cat4 {
+	font-size:22px;
+}
+.cat5 {
+	font-size:28px;
+}
+ 
 /*
  * Blog posts
  */
